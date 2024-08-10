@@ -4,15 +4,21 @@ import 'package:untitled2/add_student.dart';
 import 'package:untitled2/attendence_record.dart';
 import 'package:untitled2/cources.dart';
 import 'package:untitled2/events.dart';
-import 'package:untitled2/firebase_option.dart';
 import 'package:untitled2/teacher_admin/teacher_page.dart';
 import 'package:untitled2/timetable.dart';
-import 'firebase_options.dart'; // Add this import for DefaultFirebaseOptions
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions().currentPlatform,
+    options: FirebaseOptions(
+      apiKey: "YOUR_API_KEY", // Your API key
+      appId: "YOUR_APP_ID", // Your App ID
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID", // Your Messaging Sender ID
+      projectId: "YOUR_PROJECT_ID", // Your Project ID
+      authDomain: "YOUR_AUTH_DOMAIN", // Your Auth Domain
+      storageBucket: "YOUR_STORAGE_BUCKET", // Your Storage Bucket
+      databaseURL: "YOUR_DATABASE_URL", // Your Database URL (if used)
+      measurementId: "YOUR_MEASUREMENT_ID", // Your Measurement ID (optional)
+    ),
   );
   runApp(MyApp());
 }

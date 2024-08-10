@@ -33,6 +33,32 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
-  <script src="flutter_bootstrap.js" async></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+<script>
+  // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyAXW_9lHsV4oR_stX8q5ddaxSwN7HISf8Y",
+  authDomain: "college-link-345c7.firebaseapp.com",
+  projectId: "college-link-345c7",
+  storageBucket: "college-link-345c7.appspot.com",
+  messagingSenderId: "164910074872",
+  appId: "1:164910074872:web:0599669c8ff0fe128b640d",
+  measurementId: "G-7CWM9X7N5S"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+</script>
+<script src="main.dart.js"></script>
 </body>
 </html>

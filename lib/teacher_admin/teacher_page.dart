@@ -50,8 +50,7 @@ class _AdminScreenState extends State<Teacher> {
                       child: Column(
                         children: [
                           CircleAvatar(
-                            radius: 50, // Adjusted size of CircleAvatar
-                            backgroundImage: AssetImage('assets/avatar.png'), // Replace with your image asset
+                            radius: 50, // Adjusted size of CircleAvatar// Replace with your image asset
                           ),
                           const SizedBox(height: 20), // Adjusted space below avatar
                           _buildSidebarItem(Icons.dashboard, 'Dashboard'),
