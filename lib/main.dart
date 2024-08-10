@@ -1,13 +1,19 @@
-
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled2/add_student.dart';
 import 'package:untitled2/attendence_record.dart';
 import 'package:untitled2/cources.dart';
 import 'package:untitled2/events.dart';
+import 'package:untitled2/firebase_option.dart';
 import 'package:untitled2/teacher_admin/teacher_page.dart';
 import 'package:untitled2/timetable.dart';
+import 'firebase_options.dart'; // Add this import for DefaultFirebaseOptions
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions().currentPlatform,
+  );
   runApp(MyApp());
 }
 
@@ -43,61 +49,58 @@ class _AdminScreenState extends State<AdminScreen> {
       body: Row(
         children: [
           // Sidebar container
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              height: height,
-              width: isSidebarOpen ? 250 : 50,
-              color: const Color(0xff1b9bda), // Changed sidebar color
-              child: Column(
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      isSidebarOpen ? Icons.arrow_back_ios : Icons.arrow_forward_ios,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        isSidebarOpen = !isSidebarOpen;
-                      });
-                    },
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            height: height,
+            width: isSidebarOpen ? 250 : 50,
+            color: const Color(0xff1b9bda), // Sidebar color
+            child: Column(
+              children: [
+                IconButton(
+                  icon: Icon(
+                    isSidebarOpen ? Icons.arrow_back_ios : Icons.arrow_forward_ios,
+                    color: Colors.white,
                   ),
-                  if (isSidebarOpen)
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          CircleAvatar(
-                            radius: 50, // Adjusted size of CircleAvatar
-                          ),
-                          const SizedBox(height: 20), // Adjusted space below avatar
-                          _buildSidebarItem(Icons.dashboard, 'Dashboard'),
-                          const SizedBox(height: 20),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => Teacher()),
-                              );
-                            },
-                            child: _buildSidebarItem(Icons.person, 'Teacher'),
-                          ),
-                          const SizedBox(height: 20),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => AdminScreen()),
-                              );
-                            },
-                            child: _buildSidebarItem(Icons.school, 'Student'),
-                          )
-                        ],
-                      ),
+                  onPressed: () {
+                    setState(() {
+                      isSidebarOpen = !isSidebarOpen;
+                    });
+                  },
+                ),
+                if (isSidebarOpen)
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          radius: 50, // Size of CircleAvatar
+                        ),
+                        const SizedBox(height: 20), // Space below avatar
+                        _buildSidebarItem(Icons.dashboard, 'Dashboard'),
+                        const SizedBox(height: 20),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => Teacher()),
+                            );
+                          },
+                          child: _buildSidebarItem(Icons.person, 'Teacher'),
+                        ),
+                        const SizedBox(height: 20),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => AddStudentPage()), // Navigate to AddStudentPage
+                            );
+                          },
+                          child: _buildSidebarItem(Icons.school, 'Student'),
+                        ),
+                      ],
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
           ),
           // Main content
@@ -113,7 +116,7 @@ class _AdminScreenState extends State<AdminScreen> {
                   child: const Text(
                     'Home / Admin / Dashboard',
                     style: TextStyle(
-                      color: Color(0xff1b9bda), // Changed text color
+                      color: Color(0xff1b9bda), // Text color
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -156,7 +159,7 @@ class _AdminScreenState extends State<AdminScreen> {
                                 const Text(
                                   'Notice Board',
                                   style: TextStyle(
-                                    color: Color(0xff1b9bda), // Changed text color
+                                    color: Color(0xff1b9bda), // Text color
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -212,8 +215,8 @@ class _AdminScreenState extends State<AdminScreen> {
         );
       },
       child: Container(
-        width: 230, // Adjusted width to fit 5 containers in a row
-        height: 200, // Adjusted height accordingly
+        width: 180, // Adjusted width to fit 5 containers in a row
+        height: 160, // Adjusted height accordingly
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12.0),
@@ -230,7 +233,7 @@ class _AdminScreenState extends State<AdminScreen> {
             children: [
               CircleAvatar(
                 radius: 25,
-                backgroundColor: const Color(0xff1b9bda), // Changed circle avatar color
+                backgroundColor: const Color(0xff1b9bda), // Circle avatar color
                 child: Icon(
                   icon,
                   color: Colors.white,
@@ -241,7 +244,7 @@ class _AdminScreenState extends State<AdminScreen> {
               Text(
                 title,
                 style: const TextStyle(
-                  color: Color(0xff1b9bda), // Changed text color
+                  color: Color(0xff1b9bda), // Text color
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
@@ -259,8 +262,8 @@ class _AdminScreenState extends State<AdminScreen> {
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: const TextStyle(
-          color: Color(0xff1b9bda),
-        ), // Changed hint text color
+          color: Color(0xff1b9bda), // Hint text color
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),
