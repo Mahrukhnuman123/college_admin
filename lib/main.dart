@@ -144,6 +144,15 @@ class _AdminScreenState extends State<AdminScreen> {
                               _buildGridTile('Timetable', Icons.event, Timetable()),
                               _buildGridTile('Courses', Icons.book, Courses()), // Added Courses container
                               _buildGridTile('Events', Icons.event_note, EventsPage()), // Added Events container
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => AdminPanel()), // Navigate to AttendancePage
+                                  );
+                                },
+                                child: _buildGridTile('Attendance Records', Icons.history, AdminPanel()), // Add Attendance Records tile
+                              ),
                             ],
                           ),
                           const SizedBox(height: 60),
