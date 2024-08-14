@@ -37,7 +37,9 @@ class _MondayState extends State<Monday> {
         ),
         body: Center(
           child: Container(
-            width: MediaQuery.of(context).size.width * 0.5, // Adjust the width as needed
+            width: 350,
+            // Adjust the width as needed
+            height: 350,
             margin: EdgeInsets.symmetric(vertical: 20.0), // Add vertical margin to center the container
             decoration: BoxDecoration(
               color: Colors.white,

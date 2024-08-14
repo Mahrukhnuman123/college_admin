@@ -1,9 +1,9 @@
-
-import 'dart:html' as html;
 import 'dart:typed_data';
 import 'dart:convert'; // For base64 encoding/decoding
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class EventsPage extends StatefulWidget {
   @override
@@ -13,7 +13,7 @@ class EventsPage extends StatefulWidget {
 class _EventsPageState extends State<EventsPage> {
   final TextEditingController _eventController = TextEditingController();
   List<Map<String, dynamic>> _events = [];
-  PlatformFile? _selectedImage;
+  Uint8List? _selectedImageBytes;
 
   @override
   void initState() {
@@ -21,8 +21,9 @@ class _EventsPageState extends State<EventsPage> {
     _loadEvents();
   }
 
-  void _loadEvents() {
-    final storedEvents = html.window.localStorage['events'];
+  Future<void> _loadEvents() async {
+    final prefs = await SharedPreferences.getInstance();
+    final storedEvents = prefs.getString('events');
     if (storedEvents != null) {
       final List<dynamic> eventsJson = jsonDecode(storedEvents);
       setState(() {
@@ -37,25 +38,33 @@ class _EventsPageState extends State<EventsPage> {
     }
   }
 
-  void _saveEvents() {
+  Future<void> _saveEvents() async {
+    final prefs = await SharedPreferences.getInstance();
     final eventsJson = _events.map((event) {
       return {
         'event': event['event'],
         'image': event['image'] != null ? base64Encode(event['image']!) : null,
       };
     }).toList();
-    html.window.localStorage['events'] = jsonEncode(eventsJson);
+    prefs.setString('events', jsonEncode(eventsJson));
   }
 
   Future<void> _pickImage() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.image,
-    );
+    if (!kIsWeb) { // This block will run only on mobile platforms
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+      );
 
-    if (result != null) {
-      setState(() {
-        _selectedImage = result.files.first;
-      });
+      if (result != null && result.files.isNotEmpty) {
+        setState(() {
+          _selectedImageBytes = result.files.first.bytes;
+          print('Image bytes length: ${_selectedImageBytes?.length}');
+        });
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Image upload is not supported on web.'),
+      ));
     }
   }
 
@@ -64,10 +73,10 @@ class _EventsPageState extends State<EventsPage> {
       setState(() {
         _events.add({
           'event': _eventController.text,
-          'image': _selectedImage?.bytes,
+          'image': _selectedImageBytes,
         });
         _eventController.clear();
-        _selectedImage = null;
+        _selectedImageBytes = null;
         _saveEvents();
       });
     }
@@ -78,12 +87,6 @@ class _EventsPageState extends State<EventsPage> {
       _events.removeAt(index);
       _saveEvents();
     });
-  }
-
-  void _viewImage(Uint8List imageBytes) {
-    final base64Image = base64Encode(imageBytes);
-    final imageUrl = 'data:image/png;base64,$base64Image';
-    html.window.open(imageUrl, '_blank');
   }
 
   @override
@@ -143,13 +146,13 @@ class _EventsPageState extends State<EventsPage> {
                     ),
                     child: Column(
                       children: [
-                        if (_selectedImage != null)
+                        if (_selectedImageBytes != null)
                           Container(
                             width: double.infinity,
                             height: 200,
                             decoration: BoxDecoration(
                               image: DecorationImage(
-                                image: MemoryImage(_selectedImage!.bytes!),
+                                image: MemoryImage(_selectedImageBytes!),
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -175,6 +178,29 @@ class _EventsPageState extends State<EventsPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF00B0FF),
                     ),
+                  ),
+                  SizedBox(height: 20),
+                  // Displaying the list of events
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: _events.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(_events[index]['event']),
+                        leading: _events[index]['image'] != null
+                            ? Image.memory(
+                          _events[index]['image'],
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
+                        )
+                            : null,
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () => _removeEvent(index),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
