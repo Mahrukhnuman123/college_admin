@@ -34,7 +34,7 @@ class _AddStudentPageState extends State<AddStudentPage> {
           'role': roleController.text.trim(),
           'Password': passwordcontroller.text.trim(),
           'Department': departmentController.text.trim(),
-          'User Id': idcontroller.text.trim(),
+          'id': idcontroller.text.trim(),
 
           // Never store passwords in plaintext in the database
         });

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:untitled2/add_student.dart';
 import 'package:untitled2/attendence_record.dart';
+import 'package:untitled2/email_notification.dart';
 import 'package:untitled2/events.dart';
 import 'package:untitled2/timetable.dart';
 
@@ -30,6 +31,7 @@ class DashboardPage extends StatelessWidget {
             _buildGridTile(context, 'Add Attendance', AdminPanel()),
             _buildGridTile(context, 'Timetable', Timetable()),
             _buildGridTile(context, 'Events', EventsPage()),
+            _buildGridTile(context, 'EmailNotificaton', EmailNotification()),
           ],
         ),
       ),
