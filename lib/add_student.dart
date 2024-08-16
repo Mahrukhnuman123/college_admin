@@ -34,7 +34,7 @@ class _AddStudentPageState extends State<AddStudentPage> {
           'role': roleController.text.trim(),
           'Password': passwordcontroller.text.trim(),
           'Department': departmentController.text.trim(),
-          'User Id': idcontroller.text.trim(),
+          'id': idcontroller.text.trim(),
 
           // Never store passwords in plaintext in the database
         });
@@ -46,113 +46,114 @@ class _AddStudentPageState extends State<AddStudentPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Center(
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor:Color(0xFF1B9BDA),
+          title: Text('Add a Student',style: TextStyle(color: Colors.white),),
+          iconTheme: IconThemeData(
+            color:Colors.white,
+          ),
+        ),
+        body: SingleChildScrollView(
           child: Padding(
-            padding:
-                const EdgeInsets.only(top: 40.0), // Adjust top padding here
-            child: Container(
-              width: 350,
-              padding: EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Color(0xFF1B9BDA).withOpacity(0.9),
-                    Colors.white.withOpacity(0.9),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-                border: Border.all(
-                  color: Colors.grey,
-                  width: 2.0,
-                ),
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
+            padding: const EdgeInsets.all(16.0),
+            child: Center(
+              child: Container(
+                width: 350,
+                padding: EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Color(0xFF1B9BDA).withOpacity(0.9),
+                      Colors.white.withOpacity(0.9),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                  border: Border.all(
                     color: Colors.grey,
-                    blurRadius: 10.0,
-                    spreadRadius: 3.0,
+                    width: 2.0,
                   ),
-                ],
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Add a Student',
-                    style: TextStyle(
-                      fontSize: 30,
-                      color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey,
+                      blurRadius: 10.0,
+                      spreadRadius: 3.0,
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  TextField(
-                    controller: nameController,
-                    decoration: InputDecoration(
-                      hintText: 'Name',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  TextField(
-                    controller: roleController,
-                    decoration: InputDecoration(
-                      hintText: 'Role',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  TextField(
-                    controller: emailController,
-                    decoration: InputDecoration(
-                      hintText: 'Email',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  TextField(
-                    controller: passwordcontroller,
-                    decoration: InputDecoration(
-                      hintText: 'Password',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  SizedBox(height: 35),
-                  TextField(
-                    controller: departmentController,
-                    decoration: InputDecoration(
-                      hintText: 'Department',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  SizedBox(height: 35),
-                  TextField(
-                    controller: idcontroller,
-                    decoration: InputDecoration(
-                      hintText: 'User Id',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  SizedBox(height: 35),
-                  MaterialButton(
-                    color: Color(0xFF1B9BDA),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    onPressed: () {
-                      Addstudenttofirebase();
-                    },
-                    child: Text(
-                      'ADD',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(height: 20),
+                    TextField(
+                      controller: nameController,
+                      decoration: InputDecoration(
+                        hintText: 'Name',
+                        border: OutlineInputBorder(),
                       ),
                     ),
-                  ),
-                ],
+                    SizedBox(height: 20),
+                    TextField(
+                      controller: roleController,
+                      decoration: InputDecoration(
+                        hintText: 'Role',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    TextField(
+                      controller: emailController,
+                      decoration: InputDecoration(
+                        hintText: 'Email',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    TextField(
+                      controller: passwordcontroller,
+                      decoration: InputDecoration(
+                        hintText: 'Password',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 35),
+                    TextField(
+                      controller: departmentController,
+                      decoration: InputDecoration(
+                        hintText: 'Department',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 35),
+                    TextField(
+                      controller: idcontroller,
+                      decoration: InputDecoration(
+                        hintText: 'User Id',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 35),
+                    MaterialButton(
+                      color: Color(0xFF1B9BDA),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      onPressed: () {
+                        Addstudenttofirebase();
+                      },
+                      child: Text(
+                        'ADD',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:untitled2/teacher_admin/add_attendence.dart';
 import 'package:untitled2/teacher_admin/add_teacher.dart';
+import 'package:untitled2/teacher_admin/t_courses.dart';
+import 'package:untitled2/teacher_admin/t_email_noti.dart';
 import 'package:untitled2/teacher_admin/teacher_timetable.dart';
 
 class TeacherPage extends StatefulWidget {
@@ -13,35 +15,39 @@ class TeacherPage extends StatefulWidget {
 class _TeacherPageState extends State<TeacherPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFF333A56), // Set the background color to blue
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          color: Colors.white, // Set the icon color to white
-          onPressed: () {
-            Navigator.of(context).pop(); // Go back to the previous screen
-          },
-        ),
-        title: const Text(
-          'Teacher Dashboard',
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      body: Container(
-        color: Colors.grey[200],
-        padding: const EdgeInsets.all(18.0),
-        child: GridView(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, // Number of items per row
-            crossAxisSpacing: 10.0, // Horizontal space between items
-            mainAxisSpacing: 10.0, // Vertical space between items
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Color(0xFF333A56), // Set the background color to blue
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            color: Colors.white, // Set the icon color to white
+            onPressed: () {
+              Navigator.of(context).pop(); // Go back to the previous screen
+            },
           ),
-          children: [
-            _buildGridTile('Add a Teacher', Icons.person_add, AddTeacher()),
-            _buildGridTile('Add Attendance', Icons.check, AddAttendence()),
-            _buildGridTile('Timetable', Icons.event, TeacherTimetable()),
-          ],
+          title: const Text(
+            'Teacher Dashboard',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        body: Container(
+          color: Colors.grey[200],
+          padding: const EdgeInsets.all(18.0),
+          child: GridView(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2, // Number of items per row
+              crossAxisSpacing: 10.0, // Horizontal space between items
+              mainAxisSpacing: 10.0, // Vertical space between items
+            ),
+            children: [
+              _buildGridTile('Add a Teacher', Icons.person_add, AddTeacher()),
+              _buildGridTile('Add Attendance', Icons.check, AddAttendence()),
+              _buildGridTile('Timetable', Icons.event, TeacherTimetable()),
+              _buildGridTile('EmailNotification', Icons.event, TeacherEmail()),
+              _buildGridTile('Courses', Icons.calendar_month_outlined, T_Courses(),),
+            ],
+          ),
         ),
       ),
     );

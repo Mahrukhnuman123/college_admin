@@ -1,42 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:untitled2/add_student.dart';
 import 'package:untitled2/attendence_record.dart';
+import 'package:untitled2/email_notification.dart';
 import 'package:untitled2/events.dart';
 import 'package:untitled2/timetable.dart';
+
+import 'courses.dart';
 
 class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue,
-        iconTheme: IconThemeData(
-          color:
-              Colors.white, // Set the color of the arrow (back icon) to white
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor:Color(0xFF1B9BDA),
+          iconTheme: IconThemeData(
+            color:
+                Colors.white, // Set the color of the arrow (back icon) to white
+          ),
+          title: Text(
+            'Student Dashboard',
+            style: TextStyle(color: Colors.white),
+          ),
         ),
-        title: Text(
-          'Student Dashboard',
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      body: SafeArea(
-        child: GridView.count(
-          crossAxisCount: MediaQuery.of(context).size.width < 600 ? 2 : 4,
-          crossAxisSpacing: 20,
-          mainAxisSpacing: 20,
-          padding: EdgeInsets.all(16.0),
-          children: [
-            _buildGridTile(context, 'Add a Student', AddStudentPage()),
-            _buildGridTile(context, 'Add Attendance', AdminPanel()),
-            _buildGridTile(context, 'Timetable', Timetable()),
-            _buildGridTile(context, 'Events', EventsPage()),
-          ],
+        body: SafeArea(
+          child: GridView.count(
+            crossAxisCount: MediaQuery.of(context).size.width < 600 ? 2 : 4,
+            crossAxisSpacing: 20,
+            mainAxisSpacing: 20,
+            padding: EdgeInsets.all(16.0),
+            children: [
+              _buildGridTile(context, 'Add a Student', AddStudentPage(),Icons.person_add),
+              _buildGridTile(context, 'Add Attendance', AdminPanel(),Icons.add_box_sharp),
+              _buildGridTile(context, 'Timetable', Timetable(),Icons.more_time_sharp),
+              _buildGridTile(context, 'Events', EventsPage(),Icons.event),
+              _buildGridTile(context, 'EmailNotificaton', EmailNotification(),Icons.email),
+              _buildGridTile(context, 'Courses', Courses(),Icons.calendar_month_outlined),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildGridTile(BuildContext context, String title, Widget page) {
+  Widget _buildGridTile(BuildContext context, String title, Widget page,IconData icon) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -63,7 +70,7 @@ class DashboardPage extends StatelessWidget {
                 radius: 25,
                 backgroundColor: Color(0xff1b9bda),
                 child: Icon(
-                  Icons.info_outline,
+                  icon,
                   color: Colors.white,
                   size: 30,
                 ),

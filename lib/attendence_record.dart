@@ -37,61 +37,69 @@ class _AdminPanelState extends State<AdminPanel> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Admin Panel', style: TextStyle(color: Colors.white)),
-        backgroundColor: Color(0xFF1B9BDA),
-      ),
-      body: Center(
-        child: Container(
-          height: 500,
-          width: 350,
-          constraints: BoxConstraints(maxWidth: 600),
-          padding: const EdgeInsets.all(16.0),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0xFF1B9BDA).withOpacity(0.9),
-                Colors.white.withOpacity(0.9),
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-            borderRadius: BorderRadius.circular(12.0),
-            border: Border.all(
-              color: Colors.grey,
-              width: 2.0,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey,
-                blurRadius: 10.0,
-                spreadRadius: 3.0,
-              ),
-            ],
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Add Attendance', style: TextStyle(color: Colors.white)),
+          backgroundColor: Color(0xFF1B9BDA),
+          iconTheme: IconThemeData(
+            color: Colors.white,
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Input fields for adding attendance records
-              TextField(
-                controller: _emailController,
-                decoration: InputDecoration(labelText: 'Student Email'),
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Container(
+              height: 500,
+              width: 350,
+              constraints: BoxConstraints(maxWidth: 600),
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color(0xFF1B9BDA).withOpacity(0.9),
+                    Colors.white.withOpacity(0.9),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+                borderRadius: BorderRadius.circular(12.0),
+                border: Border.all(
+                  color: Colors.grey,
+                  width: 2.0,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey,
+                    blurRadius: 10.0,
+                    spreadRadius: 3.0,
+                  ),
+                ],
               ),
-              TextField(
-                controller: _dateController,
-                decoration: InputDecoration(labelText: 'Date'),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Input fields for adding attendance records
+                  TextField(
+                    controller: _emailController,
+                    decoration: InputDecoration(labelText: 'Student Email'),
+                  ),
+                  TextField(
+                    controller: _dateController,
+                    decoration: InputDecoration(labelText: 'Date'),
+                  ),
+                  TextField(
+                    controller: _statusController,
+                    decoration: InputDecoration(labelText: 'Status (Present/Absent)'),
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: _addRecord,
+                    child: Text('Add Record', style: TextStyle(color: Color(0xFF1B9BDA),),),
+                  ),
+                ],
               ),
-              TextField(
-                controller: _statusController,
-                decoration: InputDecoration(labelText: 'Status (Present/Absent)'),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _addRecord,
-                child: Text('Add Record'),
-              ),
-            ],
+            ),
           ),
         ),
       ),
