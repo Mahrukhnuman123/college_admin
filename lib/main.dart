@@ -1,17 +1,13 @@
-import 'dart:typed_data';
-import 'dart:convert';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled2/add_student.dart';
+import 'package:untitled2/addmissiondata.dart';
 import 'package:untitled2/attendence_record.dart';
-import 'package:untitled2/cources.dart';
 import 'package:untitled2/events.dart';
 import 'package:untitled2/firebase_options.dart';
-import 'package:untitled2/teacher_admin/add_attendence.dart';
+import 'package:untitled2/studentpage.dart';
 import 'package:untitled2/teacher_admin/teacher_page.dart';
 import 'package:untitled2/timetable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,252 +21,204 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Admin Panel App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      debugShowCheckedModeBanner: false,
       home: AdminScreen(),
     );
   }
 }
 
-class AdminScreen extends StatefulWidget {
-  const AdminScreen({super.key});
-
-  @override
-  _AdminScreenState createState() => _AdminScreenState();
-}
-
-class _AdminScreenState extends State<AdminScreen> {
-  bool isSidebarOpen = true;
-  Uint8List? _uploadedImageBytes;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadImage();
-  }
-
-  Future<void> _loadImage() async {
-    final prefs = await SharedPreferences.getInstance();
-    final imageBase64 = prefs.getString('sidebarImage');
-    if (imageBase64 != null) {
-      setState(() {
-        _uploadedImageBytes = base64Decode(imageBase64);
-      });
-    }
-  }
-
-  Future<void> _pickImage() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.image,
-    );
-
-    if (result != null && result.files.isNotEmpty) {
-      setState(() {
-        _uploadedImageBytes = result.files.first.bytes;
-      });
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setString('sidebarImage', base64Encode(_uploadedImageBytes!));
-    }
-  }
-
+class AdminScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
-
-    bool isMobile = width < 600;
-
     return Scaffold(
-      body: Column(
-        children: [
-          // Sidebar container with curved edges
-          Container(
-            decoration: BoxDecoration(
-              color: const Color(0xff1b9bda),
-              borderRadius: BorderRadius.only(
-                bottomRight: Radius.circular(30),
-                bottomLeft: Radius.circular(30),
-                topRight: Radius.circular(isSidebarOpen ? (isMobile ? 30 : 30) : 0),
-                topLeft: Radius.circular(isSidebarOpen ? (isMobile ? 30 : 30) : 0),
-              ),
-            ),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              height: isSidebarOpen ? (isMobile ? 250 : 200) : 50, // Adjusted height
-              width: width,
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      isSidebarOpen ? Icons.arrow_upward : Icons.arrow_downward,
-                      color: Colors.white,
+      body: LayoutBuilder(builder: (context, constraints) {
+        // Check if the width is less than or equal to a certain threshold (e.g., 600px)
+        bool isMobile = constraints.maxWidth <= 600;
+        if (isMobile) {
+          return Container(
+              color: Colors.black45,
+              height: double.infinity,
+              width: double.infinity,
+              child: Column(children: [
+                SizedBox(
+                  height: 30,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AdmissionData()));
+                  },
+                  child: Container(
+                    height: 170,
+                    width: 300,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          const Color.fromARGB(255, 6, 212, 195),
+                          const Color.fromARGB(255, 190, 236, 192)
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    onPressed: () {
-                      setState(() {
-                        isSidebarOpen = !isSidebarOpen;
-                      });
-                    },
-                  ),
-                  if (isSidebarOpen)
-                    Expanded(
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Row(
-                            children: [
-                              GestureDetector(
-                                onTap: _pickImage,
-                                child: CircleAvatar(
-                                  radius: 50,
-                                  backgroundImage: _uploadedImageBytes != null
-                                      ? MemoryImage(_uploadedImageBytes!)
-                                      : null,
-                                  child: _uploadedImageBytes == null
-                                      ? Icon(Icons.camera_alt, color: Colors.white, size: 30)
-                                      : null,
-                                ),
-                              ),
-                              const SizedBox(width: 20),
-                              _buildSidebarItem(Icons.dashboard, 'Dashboard'),
-                              const SizedBox(width: 20),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => TeacherPage()),
-                                  );
-                                },
-                                child: _buildSidebarItem(Icons.person, 'Teacher'),
-                              ),
-                              const SizedBox(width: 20),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => AdminScreen()),
-                                  );
-                                },
-                                child: _buildSidebarItem(Icons.school, 'Student'),
-                              ),
-                            ],
+                    child: Row(
+                      children: [
+                        // The circular shape with the admission icon
+                        Padding(
+                          padding: const EdgeInsets.all(
+                              10.0), // Add padding to create space around the circle
+                          child: Container(
+                            height: 110,
+                            width: 110,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons
+                                  .school, // Replace with the appropriate admission icon
+                              size: 35,
+                              color: Colors.blue,
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ),
-          // Main content with grid view
-          Expanded(
-            child: Column(
-              children: [
-                // Navbar
-                Container(
-                  height: 50,
-                  color: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  alignment: Alignment.centerLeft,
-                  child: const Text(
-                    'Home / Admin / Dashboard',
-                    style: TextStyle(
-                      color: Color(0xff1b9bda), // Changed text color
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    color: Colors.grey[200],
-                    padding: const EdgeInsets.all(18.0),
-                    child: GridView.count(
-                      crossAxisCount: isMobile ? 2 : 4, // Adjust for mobile or desktop view
-                      crossAxisSpacing: 20,
-                      mainAxisSpacing: 20,
-                      children: [
-                        _buildGridTile('Add a Student', Icons.person_add, AddStudentPage()),
-                        _buildGridTile('Add Attendance', Icons.check, AdminPanel()),
-                        _buildGridTile('Timetable', Icons.event, Timetable()),
-                        _buildGridTile('Events', Icons.event_note, EventsPage()),
+                        // The existing Row content
+                        Expanded(
+                          child: Text(
+                            'Admission', // Corrected "Addmisiion Statics" to "Admission Statics"
+                            style: TextStyle(
+                                fontSize: 30,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
                       ],
                     ),
                   ),
                 ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSidebarItem(IconData icon, String title) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          color: Colors.white,
-        ),
-        const SizedBox(width: 10),
-        Text(
-          title,
-          style: const TextStyle(color: Colors.white, fontSize: 18),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildGridTile(String title, IconData icon, Widget page) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => page),
+                const SizedBox(
+                  height: 30,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DashboardPage()));
+                  },
+                  child: Container(
+                    height: 170,
+                    width: 300,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.blue,
+                          const Color.fromARGB(255, 41, 62, 80)
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment
+                          .spaceBetween, // Positions elements at both ends
+                      children: [
+                        // Text on the left side
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 30.0), // Adds some padding to the left
+                          child: Text(
+                            'Student',
+                            style: TextStyle(
+                                fontSize: 25,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        // Circle with icon on the right side
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              right: 20.0), // Adds some padding to the right
+                          child: Container(
+                            height: 110,
+                            width: 110,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.school, // Student icon
+                              size: 50,
+                              color: Colors.blue,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => TeacherPage()));
+                  },
+                  child: Container(
+                      height: 170,
+                      width: 300,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Color(0xFF333A56),
+                            Color.fromARGB(197, 192, 200, 231),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        children: [
+                          // The circular shape with the admission icon
+                          Padding(
+                            padding: const EdgeInsets.all(
+                                10.0), // Add padding to create space around the circle
+                            child: Container(
+                              height: 110,
+                              width: 110,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons
+                                    .school, // Replace with the appropriate admission icon
+                                size: 35,
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ),
+                          // The existing Row content
+                          Expanded(
+                            child: Text(
+                              'Teacher', // Corrected "Addmisiion Statics" to "Admission Statics"
+                              style: TextStyle(
+                                  fontSize: 30,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      )),
+                ),
+              ]));
+        }
+        return Container(
+          height: 800,
+          width: 700,
+          color: Colors.blue,
         );
-      },
-      child: Container(
-        height: 100,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12.0),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.grey,
-              blurRadius: 4,
-            ),
-          ],
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                radius: 25,
-                backgroundColor: const Color(0xff1b9bda),
-                child: Icon(
-                  icon,
-                  color: Colors.white,
-                  size: 30,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                title,
-                style: const TextStyle(
-                  color: Color(0xff1b9bda),
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      ),
+      }),
     );
   }
 }
