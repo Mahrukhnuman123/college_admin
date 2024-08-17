@@ -64,55 +64,61 @@ class _TeacherEmailState extends State<TeacherEmail> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Admin Panel'),
-      ),
-      body: Center(
-        child: Container(
-          width: 350,
-          padding: EdgeInsets.all(16.0),
-          decoration: BoxDecoration(
-            color: const Color(0xFF333A56), // Blue background color
-            borderRadius: BorderRadius.circular(10), // Rounded corners
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Email Notification',style: TextStyle(color: Colors.white),),
+          backgroundColor: Color(0xFF333A56),
+          iconTheme: IconThemeData(
+            color: Colors.white,
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: _idController,
-                decoration: InputDecoration(
-                  labelText: 'User ID',
-                  labelStyle: TextStyle(color: Colors.white), // White label color
-                  filled: true,
-                  fillColor: Colors.white.withOpacity(0.2), // Semi-transparent background
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
+        ),
+        body: Center(
+          child: Container(
+            width: 350,
+            padding: EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: const Color(0xFF333A56), // Blue background color
+              borderRadius: BorderRadius.circular(10), // Rounded corners
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: _idController,
+                  decoration: InputDecoration(
+                    labelText: 'User ID',
+                    labelStyle: TextStyle(color: Colors.white), // White label color
+                    filled: true,
+                    fillColor: Colors.white.withOpacity(0.2), // Semi-transparent background
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
+                  style: TextStyle(color: Colors.white), // White text color
                 ),
-                style: TextStyle(color: Colors.white), // White text color
-              ),
-              SizedBox(height: 10),
-              TextField(
-                controller: _passwordController,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  labelStyle: TextStyle(color: Colors.white),
-                  filled: true,
-                  fillColor: Colors.white.withOpacity(0.2),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
+                SizedBox(height: 10),
+                TextField(
+                  controller: _passwordController,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    labelStyle: TextStyle(color: Colors.white),
+                    filled: true,
+                    fillColor: Colors.white.withOpacity(0.2),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
+                  style: TextStyle(color: Colors.white),
+                  obscureText: true, // Mask password input
                 ),
-                style: TextStyle(color: Colors.white),
-                obscureText: true, // Mask password input
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: checkAndSendEmail,
-                child: Text('Send Email'),
-              ),
-            ],
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: checkAndSendEmail,
+                  child: Text('Send Email'),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -7,57 +7,59 @@ class AdmissionData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Admission Data',
-          style: TextStyle(color: Colors.white),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Admission Data',
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Color(0xff06d4c3),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
         ),
-        backgroundColor: Colors.blue,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.of(context).pop();
+        body: StreamBuilder<QuerySnapshot>(
+          stream: _firestore.collection('admissions').snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
+            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+              return Center(child: Text('No data available'));
+            }
+      
+            var documents = snapshot.data!.docs;
+      
+            return ListView.builder(
+              itemCount: documents.length,
+              itemBuilder: (context, index) {
+                var data = documents[index].data() as Map<String, dynamic>;
+                return Container(
+                  padding: EdgeInsets.all(8.0),
+                  child: Card(
+                    elevation: 5,
+                    child: ListTile(
+                      title: Center(
+                        child: Text(
+                          '${data['firstName'] ?? 'No First Name'} ${data['lastName'] ?? 'No Last Name'}',
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      onTap: () => _showDetails(context, data),
+                    ),
+                  ),
+                );
+              },
+            );
           },
         ),
-      ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: _firestore.collection('admissions').snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(child: Text('No data available'));
-          }
-
-          var documents = snapshot.data!.docs;
-
-          return ListView.builder(
-            itemCount: documents.length,
-            itemBuilder: (context, index) {
-              var data = documents[index].data() as Map<String, dynamic>;
-              return Container(
-                padding: EdgeInsets.all(8.0),
-                child: Card(
-                  elevation: 5,
-                  child: ListTile(
-                    title: Center(
-                      child: Text(
-                        '${data['firstName'] ?? 'No First Name'} ${data['lastName'] ?? 'No Last Name'}',
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    onTap: () => _showDetails(context, data),
-                  ),
-                ),
-              );
-            },
-          );
-        },
       ),
     );
   }
