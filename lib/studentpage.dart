@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:untitled2/add_student.dart';
 import 'package:untitled2/attendence_record.dart';
 import 'package:untitled2/email_notification.dart';
