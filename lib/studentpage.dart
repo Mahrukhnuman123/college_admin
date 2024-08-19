@@ -30,9 +30,8 @@ class DashboardPage extends StatelessWidget {
           padding: EdgeInsets.all(16.0),
           children: [
             _buildGridTile(context, 'Add a Student', AddStudentPage()),
-            _buildGridTile(context, 'Add Attendance', AdminPanel()),
             _buildGridTile(context, 'Timetable', Timetable()),
-            _buildGridTile(context, 'Events', EventsPage()),
+            _buildGridTile(context, 'Events', Event()),
             _buildGridTile(context, 'EmailSendNotificaton', EmailSenderPage()),
             _buildGridTile(context, 'Notificaton', NotificationPage()),
           ],

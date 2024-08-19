@@ -1,111 +1,159 @@
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class AddTeacher extends StatefulWidget {
   @override
-  State<AddTeacher> createState() => _AddStudentPageState();
+  State<AddTeacher> createState() => _AddTeacherState();
 }
 
-class _AddStudentPageState extends State<AddTeacher> {
+class _AddTeacherState extends State<AddTeacher> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordcontroller = TextEditingController();
   TextEditingController nameController = TextEditingController();
-  TextEditingController rollNumberController = TextEditingController();
-  TextEditingController semesterController = TextEditingController();
+  TextEditingController roleController = TextEditingController();
   TextEditingController departmentController = TextEditingController();
+  TextEditingController idcontroller = TextEditingController();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<void> Addstudenttofirebase() async {
+    try {
+      UserCredential userCredential =
+      await _auth.createUserWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordcontroller.text.trim(),
+      );
+      User? user = userCredential.user;
+
+      if (user != null) {
+        await _firestore.collection('Users').doc(user.uid).set({
+          'Name': nameController.text.trim(),
+          'Email': emailController.text.trim(),
+          'role': roleController.text.trim(),
+          'Password': passwordcontroller.text.trim(),
+          'Department': departmentController.text.trim(),
+          'id': idcontroller.text.trim(),
+
+          // Never store passwords in plaintext in the database
+        });
+      }
+    } catch (e) {
+      print("Error adding student: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Add a Teacher',style: TextStyle(color: Colors.white,),),
-          backgroundColor:  const Color(0xFF333A56),
+          backgroundColor: Color(0xFF333A56),
+          title: Text('Add a Student',style: TextStyle(color: Colors.white),),
           iconTheme: IconThemeData(
-            color: Colors.white,
+            color:Colors.white,
           ),
         ),
-        body: Center(
+        body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Container(
-              width: 700, // Adjust width for responsiveness
-              padding: EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    const Color(0xFF333A56).withOpacity(0.9),
-                    Colors.white.withOpacity(0.9),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-                border: Border.all(
-                  color: Colors.grey,
-                  width: 1.0,
-                ),
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
+            child: Center(
+              child: Container(
+                width: 350,
+                padding: EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Color(0xFF333A56).withOpacity(0.9),
+                      Colors.white.withOpacity(0.9),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                  border: Border.all(
                     color: Colors.grey,
-                    blurRadius: 5.0,
-                    spreadRadius: 2.0,
+                    width: 2.0,
                   ),
-                ],
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Add a Teacher',
-                    style: TextStyle(
-                      fontSize: 30,
-                      color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey,
+                      blurRadius: 10.0,
+                      spreadRadius: 3.0,
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  TextField(
-                    controller: nameController,
-                    decoration: InputDecoration(
-                      hintText: 'Name',
-                      hintStyle: TextStyle(color: Colors.white),
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  TextField(
-                    controller: rollNumberController,
-                    decoration: InputDecoration(
-                      hintText: 'Email',
-                      hintStyle: TextStyle(color: Colors.white),
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  TextField(
-                    controller: departmentController,
-                    decoration: InputDecoration(
-                      hintText: 'Department',
-                      hintStyle: TextStyle(color: Colors.white),
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  MaterialButton(
-                    color: const Color(0xFF333A56),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    onPressed: () {
-
-                    },
-                    child: Text(
-                      'ADD',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(height: 20),
+                    TextField(
+                      controller: nameController,
+                      decoration: InputDecoration(
+                        hintText: 'Name',
+                        border: OutlineInputBorder(),
                       ),
                     ),
-                  ),
-                ],
+                    SizedBox(height: 20),
+                    TextField(
+                      controller: roleController,
+                      decoration: InputDecoration(
+                        hintText: 'Role',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    TextField(
+                      controller: emailController,
+                      decoration: InputDecoration(
+                        hintText: 'Email',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    TextField(
+                      controller: passwordcontroller,
+                      decoration: InputDecoration(
+                        hintText: 'Password',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 35),
+                    TextField(
+                      controller: departmentController,
+                      decoration: InputDecoration(
+                        hintText: 'Department',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 35),
+                    TextField(
+                      controller: idcontroller,
+                      decoration: InputDecoration(
+                        hintText: 'User Id',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 35),
+                    MaterialButton(
+                      color:  Color(0xFF333A56),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      onPressed: () {
+                        Addstudenttofirebase();
+                      },
+                      child: Text(
+                        'ADD',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

@@ -34,7 +34,7 @@ class Timetable extends StatelessWidget {
                   SizedBox(height: 20.0),
                   _buildDayCard(context, 'Tuesday', Tuesday()),
                   SizedBox(height: 20.0),
-                  _buildDayCard(context, 'Wednesday', Wednesday()),
+                  _buildDayCard(context, 'Wednesday', wednesday()),
                   SizedBox(height: 20.0),
                   _buildDayCard(context, 'Thursday', Thursday()),
                   SizedBox(height: 20.0),

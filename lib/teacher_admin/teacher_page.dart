@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:untitled2/teacher_admin/add_attendence.dart';
 import 'package:untitled2/teacher_admin/add_teacher.dart';
+import 'package:untitled2/teacher_admin/notificationteacher.dart';
 import 'package:untitled2/teacher_admin/t_courses.dart';
 import 'package:untitled2/teacher_admin/t_email_noti.dart';
+import 'package:untitled2/teacher_admin/t_events.dart';
 import 'package:untitled2/teacher_admin/teacher_timetable.dart';
 
 class TeacherPage extends StatefulWidget {
@@ -42,10 +44,11 @@ class _TeacherPageState extends State<TeacherPage> {
             ),
             children: [
               _buildGridTile('Add a Teacher', Icons.person_add, AddTeacher()),
-              _buildGridTile('Add Attendance', Icons.check, AddAttendence()),
               _buildGridTile('Timetable', Icons.event, TeacherTimetable()),
-              _buildGridTile('EmailNotification', Icons.event, TeacherEmail()),
+              _buildGridTile('EmailNotification', Icons.event, EmailSenderPage()),
               _buildGridTile('Courses', Icons.calendar_month_outlined, T_Courses(),),
+              _buildGridTile('Notification', Icons.calendar_month_outlined, NotificationTeacher(),),
+              _buildGridTile('Events', Icons.calendar_month_outlined, T_events(),),
             ],
           ),
         ),

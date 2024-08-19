@@ -4,12 +4,12 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Event extends StatefulWidget {
+class T_events extends StatefulWidget {
   @override
-  _EventState createState() => _EventState();
+  _T_eventsState createState() => _T_eventsState();
 }
 
-class _EventState extends State<Event> {
+class _T_eventsState extends State<T_events> {
   final List<EventCard> eventCards = [];
 
   @override
@@ -21,7 +21,7 @@ class _EventState extends State<Event> {
             'Event',
             style: TextStyle(color: Colors.white),
           ),
-          backgroundColor: Color(0xff1b9bda),
+          backgroundColor: Color(0xFF333A56),
           iconTheme: IconThemeData(
             color: Colors.white,
           ),
@@ -32,7 +32,7 @@ class _EventState extends State<Event> {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Color(0xff1b9bda).withOpacity(0.7),
+                Color(0xFF333A56).withOpacity(0.7),
                 Colors.white.withOpacity(0.9),
               ],
               begin: Alignment.topCenter,
@@ -110,7 +110,7 @@ class _EventCardState extends State<EventCard> {
         final imageUrl = await storageRef.getDownloadURL();
 
         // Save the event details along with the image URL to Firestore
-        await FirebaseFirestore.instance.collection('events').add({
+        await FirebaseFirestore.instance.collection('T_events').add({
           'name': eventNameController.text,
           'date': eventDateController.text,
           'description': eventDescriptionController.text,

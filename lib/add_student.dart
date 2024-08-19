@@ -28,7 +28,7 @@ class _AddStudentPageState extends State<AddStudentPage> {
       User? user = userCredential.user;
 
       if (user != null) {
-        await _firestore.collection('Students').doc(user.uid).set({
+        await _firestore.collection('Users').doc(user.uid).set({
           'Name': nameController.text.trim(),
           'Email': emailController.text.trim(),
           'role': roleController.text.trim(),
