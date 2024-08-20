@@ -1,23 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class NotificationTeacher extends StatelessWidget {
+class NotificationTeacher extends StatefulWidget {
+  @override
+  _NotificationTeacherState createState() => _NotificationTeacherState();
+}
+
+class _NotificationTeacherState extends State<NotificationTeacher> {
   final TextEditingController _notificationController = TextEditingController();
 
   void _sendNotification() {
     if (_notificationController.text.isNotEmpty) {
-      // Reference to the Realtime Database
-      DatabaseReference ref = FirebaseDatabase.instance.ref("notifications");
+      // Reference to the Firestore collection
+      CollectionReference ref = FirebaseFirestore.instance.collection('T_notifications');
 
-      // Save the notification to Realtime Database
-      ref.push().set({
+      // Save the notification to Firestore
+      ref.add({
         'message': _notificationController.text,
-        'timestamp': ServerValue.timestamp,
+        'timestamp': FieldValue.serverTimestamp(),
+      }).then((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Notification sent successfully!')),
+        );
+      }).catchError((error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to send notification: $error')),
+        );
       });
 
       // Clear the text field after sending the notification
       _notificationController.clear();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enter a message')),
+      );
     }
+  }
+
+  @override
+  void dispose() {
+    _notificationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -31,8 +54,26 @@ class NotificationTeacher extends StatelessWidget {
           padding: const EdgeInsets.all(20.0),
           width: 350.0,
           decoration: BoxDecoration(
-            color:  Color(0xFF333A56),
-            borderRadius: BorderRadius.circular(15.0),
+            gradient: LinearGradient(
+              colors: [
+                Color(0xFF333A56).withOpacity(0.9),
+                Colors.white.withOpacity(0.9),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+            border: Border.all(
+              color: Colors.grey,
+              width: 2.0,
+            ),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey,
+                blurRadius: 10.0,
+                spreadRadius: 3.0,
+              ),
+            ],
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -56,7 +97,7 @@ class NotificationTeacher extends StatelessWidget {
                 onPressed: _sendNotification,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
-                  foregroundColor:  Color(0xFF333A56),
+                  foregroundColor: Color(0xFF333A56),
                   textStyle: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 child: Text('Send'),

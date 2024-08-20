@@ -1,4 +1,4 @@
- import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void main() => runApp(MyApp());
@@ -51,30 +51,80 @@ class _EmailSenderPageState extends State<EmailSenderPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Send Email')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _nameController,
-              decoration: InputDecoration(labelText: 'Name'),
+      appBar: AppBar(
+        title: Text('Send Email'),
+        backgroundColor: Color(0xff1b9bda), // Optional: Match with the container's color
+      ),
+      body: Center(
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.8,
+          padding: EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color(0xFF1B9BDA).withOpacity(0.9),
+                Colors.white.withOpacity(0.9),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
             ),
-            TextField(
-              controller: _idController,
-              decoration: InputDecoration(labelText: 'ID'),
+            border: Border.all(
+              color: Colors.grey,
+              width: 2.0,
             ),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _composeEmail,
-              child: Text('Send Email'),
-            ),
-          ],
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey,
+                blurRadius: 10.0,
+                spreadRadius: 3.0,
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min, // To fit the content snugly
+            children: [
+              TextField(
+                controller: _nameController,
+                decoration: InputDecoration(
+                  labelText: 'Name',
+                  labelStyle: TextStyle(color: Colors.white), // White text
+                  border: OutlineInputBorder(),
+                ),
+                style: TextStyle(color: Colors.white), // White input text
+              ),
+              SizedBox(height: 16.0),
+              TextField(
+                controller: _idController,
+                decoration: InputDecoration(
+                  labelText: 'ID',
+                  labelStyle: TextStyle(color: Colors.white), // White text
+                  border: OutlineInputBorder(),
+                ),
+                style: TextStyle(color: Colors.white), // White input text
+              ),
+              SizedBox(height: 16.0),
+              TextField(
+                controller: _passwordController,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  labelStyle: TextStyle(color: Colors.white), // White text
+                  border: OutlineInputBorder(),
+                ),
+                obscureText: true,
+                style: TextStyle(color: Colors.white), // White input text
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _composeEmail,
+                child: Text('Send Email'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white, // Button color
+                  disabledBackgroundColor: Color(0xff1b9bda), // Text color on button
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

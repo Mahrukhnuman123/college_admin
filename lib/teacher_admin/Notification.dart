@@ -31,8 +31,26 @@ class NotificationPage extends StatelessWidget {
           padding: const EdgeInsets.all(20.0),
           width: 350.0,
           decoration: BoxDecoration(
-            color: Colors.blue,
-            borderRadius: BorderRadius.circular(15.0),
+            gradient: LinearGradient(
+              colors: [
+                Color(0xFF1B9BDA).withOpacity(0.9),
+                Colors.white.withOpacity(0.9),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+            border: Border.all(
+              color: Colors.grey,
+              width: 2.0,
+            ),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey,
+                blurRadius: 10.0,
+                spreadRadius: 3.0,
+              ),
+            ],
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,

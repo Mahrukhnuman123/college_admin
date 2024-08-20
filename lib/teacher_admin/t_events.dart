@@ -4,13 +4,47 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Event Manager',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: T_events(),
+    );
+  }
+}
+
 class T_events extends StatefulWidget {
   @override
   _T_eventsState createState() => _T_eventsState();
 }
 
 class _T_eventsState extends State<T_events> {
-  final List<EventCard> eventCards = [];
+  List<Widget> eventCards = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadEvents();
+  }
+
+  Future<void> _loadEvents() async {
+    final snapshot = await FirebaseFirestore.instance.collection('T_events').get();
+    final events = snapshot.docs.map((doc) {
+      return EventCard(documentId: doc.id);
+    }).toList();
+
+    setState(() {
+      eventCards = events;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +94,7 @@ class _T_eventsState extends State<T_events> {
                   child: ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        eventCards.add(EventCard());
+                        eventCards.add(EventCard(documentId: 'new_event')); // Placeholder, replace with actual logic if needed
                       });
                     },
                     child: Text('Add New Event'),
@@ -76,6 +110,10 @@ class _T_eventsState extends State<T_events> {
 }
 
 class EventCard extends StatefulWidget {
+  final String documentId;
+
+  EventCard({required this.documentId});
+
   @override
   _EventCardState createState() => _EventCardState();
 }
@@ -86,9 +124,28 @@ class _EventCardState extends State<EventCard> {
   final TextEditingController eventDescriptionController = TextEditingController();
   File? _image;
 
+  @override
+  void initState() {
+    super.initState();
+    if (widget.documentId != 'new_event') {
+      _fetchEventDetails();
+    }
+  }
+
+  Future<void> _fetchEventDetails() async {
+    final doc = await FirebaseFirestore.instance.collection('T_events').doc(widget.documentId).get();
+    if (doc.exists) {
+      final data = doc.data();
+      eventNameController.text = data?['name'] ?? '';
+      eventDateController.text = data?['date'] ?? '';
+      eventDescriptionController.text = data?['description'] ?? '';
+      // Load the image URL if necessary
+    }
+  }
+
   Future<void> _pickImage() async {
     final picker = ImagePicker();
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     setState(() {
       if (pickedFile != null) {
@@ -96,49 +153,55 @@ class _EventCardState extends State<EventCard> {
       }
     });
   }
+
   Future<void> _saveEvent() async {
     if (_image != null) {
       try {
-        // Upload the image to Firebase Storage
-        final storageRef = FirebaseStorage.instance
-            .ref()
-            .child('events/${eventNameController.text}.jpg');
-
+        final storageRef = FirebaseStorage.instance.ref().child('events/${eventNameController.text}.jpg');
         await storageRef.putFile(_image!);
-
-        // Get the download URL of the uploaded image
         final imageUrl = await storageRef.getDownloadURL();
 
-        // Save the event details along with the image URL to Firestore
-        await FirebaseFirestore.instance.collection('T_events').add({
-          'name': eventNameController.text,
-          'date': eventDateController.text,
-          'description': eventDescriptionController.text,
-          'image': imageUrl,
-        });
+        if (widget.documentId == 'new_event') {
+          await FirebaseFirestore.instance.collection('T_events').add({
+            'name': eventNameController.text,
+            'date': eventDateController.text,
+            'description': eventDescriptionController.text,
+            'image': imageUrl,
+          });
+        } else {
+          await FirebaseFirestore.instance.collection('T_events').doc(widget.documentId).update({
+            'name': eventNameController.text,
+            'date': eventDateController.text,
+            'description': eventDescriptionController.text,
+            'image': imageUrl,
+          });
+        }
 
-        // Show a success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Event saved successfully!')),
-        );
-
-        // Clear the input fields after saving
-        eventNameController.clear();
-        eventDateController.clear();
-        eventDescriptionController.clear();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Event saved successfully!')));
         setState(() {
           _image = null;
         });
       } catch (e) {
-        print('Error saving event: $e'); // Add this line for detailed error output
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save event! Please try again. Error: $e')),
-        );
+        print('Error saving event: $e');
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to save event! Please try again. Error: $e')));
       }
-
     }
   }
 
+  Future<void> _deleteEvent() async {
+    try {
+      final storageRef = FirebaseStorage.instance.ref().child('events/${eventNameController.text}.jpg');
+      await storageRef.delete();
+
+      await FirebaseFirestore.instance.collection('T_events').doc(widget.documentId).delete();
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Event deleted successfully!')));
+      Navigator.pop(context); // Pop the current screen to refresh
+    } catch (e) {
+      print('Error deleting event: $e');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to delete event! Please try again. Error: $e')));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -160,9 +223,7 @@ class _EventCardState extends State<EventCard> {
                 height: 200,
                 decoration: BoxDecoration(
                   color: Colors.grey[300],
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(15),
-                  ),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
                 ),
                 child: Icon(Icons.add_a_photo, size: 50),
               )
@@ -202,11 +263,22 @@ class _EventCardState extends State<EventCard> {
                     ),
                   ),
                   SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      _saveEvent();
-                    },
-                    child: Text('Save Event'),
+                  Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: _saveEvent,
+                        child: Text('Save Event'),
+                      ),
+                      SizedBox(width: 16),
+                      if (widget.documentId != 'new_event')
+                        ElevatedButton(
+                          onPressed: _deleteEvent,
+                          child: Text('Delete Event'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                          ),
+                        ),
+                    ],
                   ),
                 ],
               ),
