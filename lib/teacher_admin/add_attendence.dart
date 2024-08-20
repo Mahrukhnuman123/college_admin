@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class AddAttendence extends StatefulWidget {
@@ -17,8 +16,13 @@ class _AddStudentPageState extends State<AddAttendence> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Add Attendance',style: TextStyle(color: Colors.white,),),
-          backgroundColor:  const Color(0xFF333A56),
+          title: Text(
+            'Add Attendance',
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+          backgroundColor: const Color(0xFF333A56),
           iconTheme: IconThemeData(
             color: Colors.white,
           ),
@@ -94,8 +98,7 @@ class _AddStudentPageState extends State<AddAttendence> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    onPressed: () {
-                    },
+                    onPressed: () {},
                     child: Text(
                       'ADD',
                       style: TextStyle(
