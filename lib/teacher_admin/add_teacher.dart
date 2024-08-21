@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:uuid/uuid.dart';
 
 class AddTeacher extends StatefulWidget {
   @override
@@ -14,33 +18,74 @@ class _AddTeacherState extends State<AddTeacher> {
   TextEditingController roleController = TextEditingController();
   TextEditingController departmentController = TextEditingController();
   TextEditingController idcontroller = TextEditingController();
+  final Uuid _uuid = Uuid();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<void> Addstudenttofirebase() async {
+  Future<String> getDeviceId() async {
+    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     try {
+      if (Platform.isAndroid) {
+        final AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+        return androidInfo.id; // For Android
+      } else if (Platform.isIOS) {
+        final IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+        return iosInfo.identifierForVendor ?? _uuid.v4(); // For iOS
+      } else {
+        return _uuid.v4(); // Default UUID for non-mobile platforms
+      }
+    } catch (e) {
+      print("Error getting device ID: $e");
+      return _uuid.v4(); // Fallback UUID
+    }
+  }
+
+  Future<void> addTeacherToFirebase() async {
+    try {
+      final deviceId = await getDeviceId();
+
       UserCredential userCredential =
-      await _auth.createUserWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordcontroller.text.trim(),
-      );
+          await _auth.createUserWithEmailAndPassword(
+              email: emailController.text.trim(),
+              password: passwordcontroller.text.trim());
+
       User? user = userCredential.user;
 
       if (user != null) {
-        await _firestore.collection('Users').doc(user.uid).set({
-          'Name': nameController.text.trim(),
-          'Email': emailController.text.trim(),
-          'role': roleController.text.trim(),
-          'Password': passwordcontroller.text.trim(),
-          'Department': departmentController.text.trim(),
-          'id': idcontroller.text.trim(),
+        final name = nameController.text.trim();
+        final email = emailController.text.trim();
+        final role = roleController.text.trim();
+        final id = idcontroller.text.trim();
+        final departments = departmentController.text
+            .trim()
+            .split(',')
+            .map((e) => e.trim())
+            .toList();
 
-          // Never store passwords in plaintext in the database
-        });
+        for (String department in departments) {
+          // Add the teacher data to a subcollection under the department document
+          await _firestore
+              .collection('Users')
+              .doc(department)
+              .collection('Teachers')
+              .doc(user.uid) // Use UID as the document ID
+              .set({
+                'Name': name,
+                'Email': email,
+                'Role': role,
+                'Department': department,
+                'ID': id,
+                'Password': passwordcontroller.text.trim(),
+                'DeviceId': deviceId,
+              })
+              .then((_) => print("Teacher added successfully to $department."))
+              .catchError((error) =>
+                  print("Failed to add teacher to $department: $error"));
+        }
       }
     } catch (e) {
-      print("Error adding student: $e");
+      print("Error adding teacher: $e");
     }
   }
 
@@ -50,9 +95,12 @@ class _AddTeacherState extends State<AddTeacher> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Color(0xFF333A56),
-          title: Text('Add a Student',style: TextStyle(color: Colors.white),),
+          title: Text(
+            'Add a Teacher',
+            style: TextStyle(color: Colors.white),
+          ),
           iconTheme: IconThemeData(
-            color:Colors.white,
+            color: Colors.white,
           ),
         ),
         body: SingleChildScrollView(
@@ -123,7 +171,7 @@ class _AddTeacherState extends State<AddTeacher> {
                     TextField(
                       controller: departmentController,
                       decoration: InputDecoration(
-                        hintText: 'Department',
+                        hintText: 'Departments (comma separated)',
                         border: OutlineInputBorder(),
                       ),
                     ),
@@ -131,18 +179,18 @@ class _AddTeacherState extends State<AddTeacher> {
                     TextField(
                       controller: idcontroller,
                       decoration: InputDecoration(
-                        hintText: 'User Id',
+                        hintText: 'User ID',
                         border: OutlineInputBorder(),
                       ),
                     ),
                     SizedBox(height: 35),
                     MaterialButton(
-                      color:  Color(0xFF333A56),
+                      color: Color(0xFF333A56),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
                       onPressed: () {
-                        Addstudenttofirebase();
+                        addTeacherToFirebase();
                       },
                       child: Text(
                         'ADD',

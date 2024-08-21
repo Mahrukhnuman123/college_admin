@@ -18,6 +18,7 @@ class _AddStudentPageState extends State<AddStudentPage> {
   TextEditingController roleController = TextEditingController();
   TextEditingController departmentController = TextEditingController();
   TextEditingController idController = TextEditingController();
+  TextEditingController semesterController = TextEditingController();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -54,16 +55,25 @@ class _AddStudentPageState extends State<AddStudentPage> {
       User? user = userCredential.user;
 
       if (user != null) {
-        await _firestore.collection('Students').doc(user.uid).set({
-          'Name': nameController.text.trim(),
-          'Email': emailController.text.trim(),
-          'Role': roleController.text.trim(),
-          'Password': passwordController.text.trim(),
-          'Department': departmentController.text.trim(),
-          'ID': idController.text.trim(),
-          'DeviceId': deviceId, // Add the device ID here
-        });
-        print("Student added successfully.");
+        final department = departmentController.text.trim();
+
+        // Add the student data to a subcollection under the department document
+        await _firestore
+            .collection('Users')
+            .doc(department)
+            .collection('Students')
+            .doc(user.uid) // Use UID as the document ID
+            .set({
+              'Name': nameController.text.trim(),
+              'Email': emailController.text.trim(),
+              'Role': roleController.text.trim(),
+              'Department': department,
+              'ID': idController.text.trim(),
+              'Password': passwordController.text.trim(),
+              'DeviceId': deviceId,
+            })
+            .then((_) => print("Student added successfully."))
+            .catchError((error) => print("Failed to add student: $error"));
       }
     } catch (e) {
       print("Error adding student: $e");
@@ -149,7 +159,7 @@ class _AddStudentPageState extends State<AddStudentPage> {
                       ),
                       obscureText: true, // Hide the password text
                     ),
-                    SizedBox(height: 35),
+                    SizedBox(height: 20),
                     TextField(
                       controller: departmentController,
                       decoration: InputDecoration(
@@ -157,7 +167,7 @@ class _AddStudentPageState extends State<AddStudentPage> {
                         border: OutlineInputBorder(),
                       ),
                     ),
-                    SizedBox(height: 35),
+                    SizedBox(height: 20),
                     TextField(
                       controller: idController,
                       decoration: InputDecoration(
