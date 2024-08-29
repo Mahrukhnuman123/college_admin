@@ -72,33 +72,35 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: Color(0xFF1B9BDA).withOpacity(0.9), // Background color
-        child: Stack(
-          children: [
-            FadeTransition(
-              opacity: _animation,
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 50.0),
-                  child: Center(
-                    child: Text(
-                      'Welcome to Admin Panel', // Centered text
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
+    return SafeArea(
+      child: Scaffold(
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          color: Colors.black45,// Background color
+          child: Stack(
+            children: [
+              FadeTransition(
+                opacity: _animation,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 50.0),
+                    child: Center(
+                      child: Text(
+                        'Welcome to Admin Panel', // Centered text
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

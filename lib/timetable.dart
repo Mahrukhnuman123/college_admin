@@ -97,7 +97,7 @@ class _TimetableState extends State<Timetable> {
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.blue[900],
+                                  color: Color(0xFF1B9BDA),
                                 ),
                               ),
                             ),

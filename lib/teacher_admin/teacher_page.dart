@@ -4,7 +4,6 @@ import 'package:untitled2/courses_student.dart';
 import 'package:untitled2/events.dart';
 import 'package:untitled2/teacher_admin/add_teacher.dart';
 import 'package:untitled2/teacher_admin/notificationteacher.dart';
-import 'package:untitled2/teacher_admin/t_courses.dart';
 import 'package:untitled2/teacher_admin/t_email_noti.dart';
 import 'package:untitled2/teacher_admin/t_events.dart';
 import 'package:untitled2/teacher_admin/teacher_timetable.dart';
@@ -113,7 +112,7 @@ class DashboardContent extends StatelessWidget {
               _buildGridTile(
                 context,
                 'Courses',
-                T_Courses(),
+                CoursesStudent (),
                 Icons.book, // Icon for courses
               ),
               _buildGridTile(

@@ -46,6 +46,9 @@ class _NotificationTeacherState extends State<NotificationTeacher> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF333A56),
+        iconTheme: IconThemeData(
+          color: Colors.white,
+        ),
         title: Text('Send Notification',style: TextStyle(color:Colors.white ),),
         actions: [
           DropdownButton<String>(

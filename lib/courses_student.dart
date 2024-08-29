@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:uuid/uuid.dart';
 
 class CoursesStudent extends StatefulWidget {
   @override
@@ -8,148 +11,85 @@ class CoursesStudent extends StatefulWidget {
 }
 
 class _CoursesStudentState extends State<CoursesStudent> {
-  final Map<String, Map<String, List<String>>> courses = {
-    'BS IT': {
-      'Semester 1': [],
-      'Semester 2': [],
-      'Semester 3': [],
-      'Semester 4': [],
-      'Semester 5': [],
-      'Semester 6': [],
-      'Semester 7': [],
-      'Semester 8': [],
-    },
-    'BS English': {
-      'Semester 1': [],
-      'Semester 2': [],
-      'Semester 3': [],
-      'Semester 4': [],
-      'Semester 5': [],
-      'Semester 6': [],
-      'Semester 7': [],
-      'Semester 8': [],
-    },
-    'BS IST': {
-      'Semester 1': [],
-      'Semester 2': [],
-      'Semester 3': [],
-      'Semester 4': [],
-      'Semester 5': [],
-      'Semester 6': [],
-      'Semester 7': [],
-      'Semester 8': [],
-    },
-    'BS CS': {
-      'Semester 1': [],
-      'Semester 2': [],
-      'Semester 3': [],
-      'Semester 4': [],
-      'Semester 5': [],
-      'Semester 6': [],
-      'Semester 7': [],
-      'Semester 8': [],
-    },
-    'BS Psychology': {
-      'Semester 1': [],
-      'Semester 2': [],
-      'Semester 3': [],
-      'Semester 4': [],
-      'Semester 5': [],
-      'Semester 6': [],
-      'Semester 7': [],
-      'Semester 8': [],
-    },
-    'BS Physics': {
-      'Semester 1': [],
-      'Semester 2': [],
-      'Semester 3': [],
-      'Semester 4': [],
-      'Semester 5': [],
-      'Semester 6': [],
-      'Semester 7': [],
-      'Semester 8': [],
-    },
-    'BS Education': {
-      'Semester 1': [],
-      'Semester 2': [],
-      'Semester 3': [],
-      'Semester 4': [],
-      'Semester 5': [],
-      'Semester 6': [],
-      'Semester 7': [],
-      'Semester 8': [],
-    },
-    // Add other departments here
-  };
+  final List<String> departments = ['Economics', 'IT', 'Islamiat'];
+  String? selectedDepartment;
 
-  final Map<String, String> departmentImages = {
-    'BS IT': 'assets/bsit.jpg',
-    'BS English': 'assets/bsenglish.jpg',
-    // Add other department images here
+  final Map<String, List<Map<String, String>>> semesters = {
+    'Semester 1': [],
+    'Semester 2': [],
+    'Semester 3': [],
+    'Semester 4': [],
+    'Semester 5': [],
+    'Semester 6': [],
+    'Semester 7': [],
+    'Semester 8': [],
   };
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: CourseListView(
-        courses: courses,
-        departmentImages: departmentImages,
-      ),
-    );
-  }
-}
-
-class CourseListView extends StatelessWidget {
-  final Map<String, Map<String, List<String>>> courses;
-  final Map<String, String> departmentImages;
-
-  CourseListView({required this.courses, required this.departmentImages});
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color(0xFF333A56),
-          title: Text('Courses',style: TextStyle(color: Colors.white),),
-        ),
-        body: ListView.builder(
-          itemCount: courses.keys.length,
-          itemBuilder: (context, index) {
-            String department = courses.keys.elementAt(index);
-            return Card(
-              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: ListTile(
-                title: Text(
-                  department,
-                  style: TextStyle(color: Color(0xFF333A56), fontWeight: FontWeight.bold),
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DepartmentView(
-                        department: department,
-                        semesters: courses[department]!,
-                      ),
-                    ),
+      home: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Color(0xFF1B9BDA),
+            title: Text(
+              'Select Department',
+              style: TextStyle(color: Colors.white),
+            ),
+    leading: IconButton(
+    icon: Icon(Icons.arrow_back,color: Colors.white,),
+    onPressed: () {
+    Navigator.pop(context); // Navigate back when pressed
+    },
+          ),
+          ),
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: DropdownButtonFormField<String>(
+                value: selectedDepartment,
+                hint: Text('Choose Department'),
+                items: departments.map((String department) {
+                  return DropdownMenuItem<String>(
+                    value: department,
+                    child: Text(department),
                   );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedDepartment = newValue;
+                  });
+        
+                  if (newValue != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SemesterView(
+                          semesters: semesters,
+                          department: newValue,
+                        ),
+                      ),
+                    );
+                  }
                 },
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                ),
               ),
-            );
-          },
+            ),
+          ),
         ),
       ),
     );
   }
 }
 
-class DepartmentView extends StatelessWidget {
-  final String department;
-  final Map<String, List<String>> semesters;
+class SemesterView extends StatelessWidget {
+  final Map<String, List<Map<String, String>>> semesters;
+  final String department; // Add department
 
-  DepartmentView({required this.department, required this.semesters});
+  SemesterView({required this.semesters, required this.department});
 
   @override
   Widget build(BuildContext context) {
@@ -157,13 +97,12 @@ class DepartmentView extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Color(0xFF333A56),
+          backgroundColor: Color(0xFF1B9BDA),
           title: Text(
             '$department - Semesters',
             style: TextStyle(color: Colors.white),
           ),
-          iconTheme: IconThemeData(
-              color: Colors.white),
+          iconTheme: IconThemeData(color: Colors.white),
         ),
         body: ListView.builder(
           itemCount: semesterKeys.length,
@@ -174,16 +113,16 @@ class DepartmentView extends StatelessWidget {
               child: ListTile(
                 title: Text(
                   semester,
-                  style: TextStyle(color: Color(0xFF333A56), fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      color: Color(0xFF1B9BDA), fontWeight: FontWeight.bold),
                 ),
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SemesterView(
-                        department: department,
+                      builder: (context) => SemesterSubjectsView(
                         semester: semester,
-                        subjects: semesters[semester]!,
+                        department: department, // Pass department
                       ),
                     ),
                   );
@@ -197,178 +136,187 @@ class DepartmentView extends StatelessWidget {
   }
 }
 
-class SemesterView extends StatelessWidget {
-  final String department;
-  final String semester;
-  final List<String> subjects;
 
-  SemesterView({required this.department, required this.semester, required this.subjects});
+class SemesterSubjectsView extends StatelessWidget {
+  final String semester;
+  final String department;
+
+  SemesterSubjectsView({required this.semester, required this.department});
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Color(0xFF333A56),
+          backgroundColor: Color(0xFF1B9BDA),
           title: Text(
             '$department - $semester',
             style: TextStyle(color: Colors.white),
           ),
-          iconTheme: IconThemeData(
-              color: Colors.white),
+          iconTheme: IconThemeData(color: Colors.white),
         ),
-        body: ListView.builder(
-          itemCount: subjects.length + 1,
-          itemBuilder: (context, index) {
-            if (index == subjects.length) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AddSubjectView(
-                          department: department,
-                          semester: semester,
-                          subjects: subjects,
-                        ),
-                      ),
-                    );
-                  },
-                  child: Text('Add Subject',style: TextStyle(color: Color(0xFF333A56),),
+        body: Column(
+          children: [
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('Subjects')
+                    .doc(department)
+                    .collection(semester)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  }
 
-                  ),
-                ),
-              );
-            }
-            return Card(
-              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: ListTile(
-                title: Text(
-                  subjects[index],
-                  style: TextStyle(color: Color(0xFF333A56), fontWeight: FontWeight.bold),
-                ),
-                onTap: () {
+                  if (snapshot.hasError) {
+                    print('Error fetching subjects: ${snapshot.error}');
+                    return Center(child: Text('Error fetching subjects'));
+                  }
+
+                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return Center(child: Text('No subjects available.'));
+                  }
+
+                  List<DocumentSnapshot> subjects = snapshot.data!.docs;
+                  print('Subjects Data: $subjects');
+
+                  return ListView.builder(
+                    itemCount: subjects.length,
+                    itemBuilder: (context, index) {
+                      var subjectData = subjects[index].data() as Map<String, dynamic>;
+                      return Card(
+                        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        child: ListTile(
+                          title: Text(subjectData['name'] ?? 'No name'),
+                          subtitle: Text(subjectData['department'] ?? 'No department'),
+                          leading: subjectData['image'] != null
+                              ? Image.network(
+                            subjectData['image'],
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.cover,
+                          )
+                              : null,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SubjectView(
+                                  semester: semester,
+                                  subject: subjectData['name'] ?? 'No name',
+                                  imagePath: subjectData['image'] ?? '',
+                                  department: subjectData['department'] ?? 'Unknown',
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: ElevatedButton(
+                onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SubjectView(
-                        department: department,
+                      builder: (context) => AddSubjectView(
                         semester: semester,
-                        subject: subjects[index],
+                        department: department,
                       ),
                     ),
                   );
                 },
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
-class AddSubjectView extends StatelessWidget {
-  final String department;
-  final String semester;
-  final List<String> subjects;
-
-  AddSubjectView({required this.department, required this.semester, required this.subjects});
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Add Subjects',style: TextStyle(color: Colors.white),),
-          backgroundColor: Color(0xFF333A56),
-          iconTheme: IconThemeData(
-            color: Colors.white,
-          ),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              _buildSubjectContainer(context, 1),
-              SizedBox(height: 20),
-              _buildSubjectContainer(context, 2),
-              SizedBox(height: 20),
-              _buildSubjectContainer(context, 3),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSubjectContainer(BuildContext context, int index) {
-    TextEditingController subjectController = TextEditingController();
-    return Column(
-      children: [
-        TextField(
-          controller: subjectController,
-          decoration: InputDecoration(
-            labelText: 'Subject Name $index',
-            border: OutlineInputBorder(),
-          ),
-        ),
-        SizedBox(height: 20),
-        ElevatedButton(
-          onPressed: () {
-            String newSubject = subjectController.text;
-            if (newSubject.isNotEmpty) {
-              subjects.add(newSubject);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SubjectView(
-                    department: department,
-                    semester: semester,
-                    subject: newSubject,
-                  ),
+                child: Text(
+                  'Add Subject',
+                  style: TextStyle(color: Colors.white),
                 ),
-              );
-            }
-          },
-          child: Text(
-            'Add Subject',
-            style: TextStyle(color: Color(0xFF333A56)),
-          ),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-          ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF1B9BDA),
+                ),
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
 
-class SubjectView extends StatefulWidget {
-  final String department;
-  final String semester;
-  final String subject;
 
-  SubjectView({required this.department, required this.semester, required this.subject});
+class AddSubjectView extends StatefulWidget {
+  final String department; // Department is now fixed
+  final String semester;
+
+  AddSubjectView({required this.department, required this.semester});
 
   @override
-  _SubjectViewState createState() => _SubjectViewState();
+  _AddSubjectViewState createState() => _AddSubjectViewState();
 }
 
-class _SubjectViewState extends State<SubjectView> {
+class _AddSubjectViewState extends State<AddSubjectView> {
+  final TextEditingController subjectController = TextEditingController();
   File? _image;
+
+
 
   Future<void> _pickImage() async {
     final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
 
-    setState(() {
-      if (pickedFile != null) {
+    if (pickedFile != null) {
+      setState(() {
         _image = File(pickedFile.path);
-      } else {
-        print('No image selected.');
-      }
-    });
+      });
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('No image selected.')));
+    }
+  }
+
+  Future<void> _uploadSubject() async {
+    if (subjectController.text.isEmpty || _image == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Please fill all fields and select an image.')));
+      return;
+    }
+
+    String subjectName = subjectController.text;
+    String fileName = Uuid().v4(); // Generate a unique filename using UUID
+    String departmentPath = 'subjects/${widget.department}/${widget.semester}/$fileName.jpg';
+
+    try {
+      // Upload image to Firebase Storage
+      Reference storageRef = FirebaseStorage.instance.ref().child(departmentPath);
+      await storageRef.putFile(_image!);
+      String imageUrl = await storageRef.getDownloadURL();
+
+      // Debug log
+      print('Image URL: $imageUrl');
+
+      // Store subject information in Firestore
+      await FirebaseFirestore.instance
+          .collection('Subjects')
+          .doc(widget.department)
+          .collection(widget.semester)
+          .doc(subjectName)
+          .set({
+        'name': subjectName,
+        'department': widget.department,
+        'image': imageUrl,
+      });
+
+      Navigator.pop(context);
+    } catch (e) {
+      // Debug log
+      print('Error: $e');
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Failed to upload subject.')));
+    }
   }
 
   @override
@@ -376,61 +324,169 @@ class _SubjectViewState extends State<SubjectView> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Color(0xFF333A56),
-          title: Text(
-            widget.subject,
-            style: TextStyle(color: Colors.white),
+          title: Text('Add Subject', style: TextStyle(color: Colors.white)),
+          backgroundColor: Color(0xFF1B9BDA),
+          iconTheme: IconThemeData(
+            color: Colors.white,
           ),
-          iconTheme: IconThemeData(color: Colors.white),
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 300,
-                height: 300,
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(12.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 5,
-                      blurRadius: 7,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: _image == null
-                    ? Center(
-                  child: Text(
-                    'No image selected.',
-                    style: TextStyle(color: Color(0xFF333A56), fontSize: 18),
+        body: SingleChildScrollView( // To prevent overflow
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                TextField(
+                  controller: subjectController,
+                  decoration: InputDecoration(
+                    labelText: 'Subject Name',
+                    border: OutlineInputBorder(),
                   ),
+                ),
+                SizedBox(height: 20),
+                // Removed department selection since it's fixed
+                ElevatedButton(
+                  onPressed: _pickImage,
+                  child: Text('Select Image'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF1B9BDA),
+                  ),
+                ),
+                SizedBox(height: 20),
+                _image != null
+                    ? Image.file(
+                  _image!,
+                  height: 200,
                 )
-                    : ClipRRect(
-                  borderRadius: BorderRadius.circular(12.0),
-                  child: Image.file(
-                    _image!,
-                    width: 300,
-                    height: 300,
-                    fit: BoxFit.cover,
+                    : Text('No image selected.'),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _uploadSubject,
+                  child: Text('Add Subject'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF1B9BDA),
                   ),
                 ),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _pickImage,
-                child: Text('Upload Image'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF333A56),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
+
+
+class SubjectView extends StatelessWidget {
+  final String department;
+  final String semester;
+  final String subject;
+  final String imagePath;
+
+  SubjectView({
+    required this.department,
+    required this.semester,
+    required this.subject,
+    required this.imagePath,
+  });
+
+  Future<void> _deleteSubject(BuildContext context) async {
+    try {
+      // Delete image from Firebase Storage
+      Reference storageRef = FirebaseStorage.instance.refFromURL(imagePath);
+      await storageRef.delete();
+
+      // Delete subject from Firestore
+      await FirebaseFirestore.instance
+          .collection('Subjects')
+          .doc(department)
+          .collection(semester)
+          .doc(subject)
+          .delete();
+
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Subject deleted successfully.')));
+
+      // Go back to previous screen
+      Navigator.pop(context);
+    } catch (e) {
+      // Show error message
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Failed to delete subject.')));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(subject, style: TextStyle(color: Colors.white)),
+          backgroundColor: Color(0xFF1B9BDA),
+          iconTheme: IconThemeData(
+            color: Colors.white,
+          ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.delete, color: Colors.white),
+              onPressed: () async {
+                bool confirmDelete = await showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text('Delete Subject'),
+                    content: Text('Are you sure you want to delete this subject?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        child: Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        child: Text('Delete'),
+                      ),
+                    ],
+                  ),
+                );
+                if (confirmDelete) {
+                  _deleteSubject(context);
+                }
+              },
+            ),
+          ],
+        ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                '$department - $semester',
+                style: TextStyle(
+                    color: Color(0xFF1B9BDA),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+            SizedBox(height: 20),
+            Image.network(
+              imagePath,
+              height: 200,
+            ),
+            SizedBox(height: 20),
+            Text(
+              subject,
+              style: TextStyle(
+                color:Color(0xFF1B9BDA),
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+

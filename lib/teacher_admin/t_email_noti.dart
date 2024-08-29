@@ -75,6 +75,9 @@ class _EmailSenderPageState extends State<EmailSenderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Colors.white,
+        ),
         title: Text('Send Email', style: TextStyle(color: Colors.white)),
         backgroundColor: Color(0xFF333A56),
       ),
