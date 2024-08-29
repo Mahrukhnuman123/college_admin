@@ -1,62 +1,135 @@
 import 'package:flutter/material.dart';
-import 'package:untitled2/teacher_admin/add_attendence.dart';
+import 'package:untitled2/add_student.dart';
+import 'package:untitled2/courses_student.dart';
+import 'package:untitled2/events.dart';
 import 'package:untitled2/teacher_admin/add_teacher.dart';
 import 'package:untitled2/teacher_admin/notificationteacher.dart';
 import 'package:untitled2/teacher_admin/t_courses.dart';
 import 'package:untitled2/teacher_admin/t_email_noti.dart';
 import 'package:untitled2/teacher_admin/t_events.dart';
 import 'package:untitled2/teacher_admin/teacher_timetable.dart';
+import 'package:untitled2/timetable.dart';
+import 'package:untitled2/email_notification.dart';
+import 'package:untitled2/teacher_admin/Notification.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 class TeacherPage extends StatefulWidget {
-  const TeacherPage({super.key});
-
   @override
   _TeacherPageState createState() => _TeacherPageState();
 }
 
 class _TeacherPageState extends State<TeacherPage> {
+  int _selectedIndex = 0;
+
+  // Pages for the navigation bar
+  final List<Widget> _pages = [
+    DashboardContent(),
+    NotificationTeacher(), // Your existing notification page
+    EmailSenderPage(),  // Your existing email notification page
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color(0xFF333A56), // Set the background color to blue
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            color: Colors.white, // Set the icon color to white
-            onPressed: () {
-              Navigator.of(context).pop(); // Go back to the previous screen
-            },
-          ),
-          title: const Text(
-            'Teacher Dashboard',
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-        body: Container(
-          color: Colors.grey[200],
-          padding: const EdgeInsets.all(18.0),
-          child: GridView(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, // Number of items per row
-              crossAxisSpacing: 10.0, // Horizontal space between items
-              mainAxisSpacing: 10.0, // Vertical space between items
-            ),
-            children: [
-              _buildGridTile('Add a Teacher', Icons.person_add, AddTeacher()),
-              _buildGridTile('Timetable', Icons.event, TeacherTimetable()),
-              _buildGridTile('EmailNotification', Icons.event, EmailSenderPage()),
-              _buildGridTile('Courses', Icons.calendar_month_outlined, T_Courses(),),
-              _buildGridTile('Notification', Icons.calendar_month_outlined, NotificationTeacher(),),
-              _buildGridTile('Events', Icons.calendar_month_outlined, T_events(),),
-            ],
-          ),
-        ),
+    return Scaffold(
+      body: SafeArea(child: _pages[_selectedIndex]),
+      bottomNavigationBar: CurvedNavigationBar(
+        color: Color(0xFF333A56).withOpacity(0.9),
+        backgroundColor: Colors.transparent,
+        buttonBackgroundColor: Color(0xFF333A56).withOpacity(0.9),
+        animationCurve: Curves.easeInOut,
+        animationDuration: Duration(milliseconds: 600),
+        items: <Widget>[
+          Icon(Icons.home, size: 30, color: Colors.white), // Dashboard
+          Icon(Icons.notifications, size: 30, color: Colors.white), // Notifications
+          Icon(Icons.email, size: 30, color: Colors.white), // Email Notifications
+        ],
+        onTap: _onItemTapped,
       ),
     );
   }
+}
 
-  Widget _buildGridTile(String title, IconData icon, Widget page) {
+class DashboardContent extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        // Top Container with Curved Edges
+        ClipPath(
+          clipper: TopCurveClipper(),
+          child: Container(
+            color: Color(0xFF333A56).withOpacity(0.9),
+            width: double.infinity,
+            height: 250.0,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Dashboard',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  'Teacher/Admin/Dashboard',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        // GridView with Menu Options
+        Expanded(
+          child: GridView.count(
+            crossAxisCount: MediaQuery.of(context).size.width < 600 ? 2 : 4,
+            crossAxisSpacing: 20,
+            mainAxisSpacing: 20,
+            padding: EdgeInsets.all(16.0),
+            children: [
+              _buildGridTile(
+                context,
+                'Add a Teacher',
+                AddTeacher(),
+                Icons.person_add, // Icon for adding a teacher
+              ),
+              _buildGridTile(
+                context,
+                'Timetable',
+                TimetableT(),
+                Icons.schedule, // Icon for timetable
+              ),
+              _buildGridTile(
+                context,
+                'Courses',
+                T_Courses(),
+                Icons.book, // Icon for courses
+              ),
+              _buildGridTile(
+                context,
+                'Events',
+                T_events(),
+                Icons.event, // Icon for events
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGridTile(BuildContext context, String title, Widget page, IconData icon) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -65,11 +138,10 @@ class _TeacherPageState extends State<TeacherPage> {
         );
       },
       child: Container(
-        height: 100,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12.0),
-          boxShadow: const [
+          boxShadow: [
             BoxShadow(
               color: Colors.grey,
               blurRadius: 4,
@@ -82,17 +154,17 @@ class _TeacherPageState extends State<TeacherPage> {
             children: [
               CircleAvatar(
                 radius: 25,
-                backgroundColor: const Color(0xFF333A56),
+                backgroundColor: Color(0xFF333A56),
                 child: Icon(
-                  icon,
+                  icon, // Use the passed icon here
                   color: Colors.white,
                   size: 30,
                 ),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10),
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   color: Color(0xFF333A56),
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -105,4 +177,23 @@ class _TeacherPageState extends State<TeacherPage> {
       ),
     );
   }
+}
+
+// Custom Clipper for Curved Edges
+class TopCurveClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    var path = Path();
+    path.lineTo(0, size.height - 50);
+    var firstControlPoint = Offset(size.width / 2, size.height);
+    var firstEndPoint = Offset(size.width, size.height - 50);
+    path.quadraticBezierTo(
+        firstControlPoint.dx, firstControlPoint.dy, firstEndPoint.dx, firstEndPoint.dy);
+    path.lineTo(size.width, 0);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }

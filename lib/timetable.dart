@@ -10,10 +10,13 @@ class _TimetableState extends State<Timetable> {
   final List<String> days = ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun'];
   final List<TextEditingController> _subjectControllers = List.generate(21, (_) => TextEditingController());
   final List<TextEditingController> _timeControllers = List.generate(21, (_) => TextEditingController());
+  final List<String> departments = ['IT', 'Economic', 'Islamiat'];
+  String selectedDepartment = 'IT';  // Default selected department
 
   void _saveTimetable() {
     for (int i = 0; i < days.length; i++) {
-      FirebaseFirestore.instance.collection('StudentTimetable').doc(days[i]).set({
+      FirebaseFirestore.instance.collection('Timetable').doc(selectedDepartment)
+          .collection('Days').doc(days[i]).set({
         'subjects': [
           {
             'subject': _subjectControllers[i * 3].text,
@@ -31,7 +34,7 @@ class _TimetableState extends State<Timetable> {
       });
     }
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Timetable saved successfully!')),
+      SnackBar(content: Text('Timetable saved successfully for $selectedDepartment!')),
     );
   }
 
@@ -59,64 +62,82 @@ class _TimetableState extends State<Timetable> {
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Table(
-                columnWidths: {
-                  0: FlexColumnWidth(1.5), // Increased width of the days column
-                  1: FlexColumnWidth(2.5), // Adjusted other columns to maintain balance
-                  2: FlexColumnWidth(2.5),
-                  3: FlexColumnWidth(2.5),
-                },
-                border: TableBorder.all(color: Colors.black, width: 1),
+              child: Column(
                 children: [
-                  for (int i = 0; i < days.length; i++)
-                    TableRow(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            days[i],
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blue[900],
+                  DropdownButton<String>(
+                    value: selectedDepartment,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedDepartment = newValue!;
+                      });
+                    },
+                    items: departments.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+                  Table(
+                    columnWidths: {
+                      0: FlexColumnWidth(1.5),
+                      1: FlexColumnWidth(2.5),
+                      2: FlexColumnWidth(2.5),
+                      3: FlexColumnWidth(2.5),
+                    },
+                    border: TableBorder.all(color: Colors.black, width: 1),
+                    children: [
+                      for (int i = 0; i < days.length; i++)
+                        TableRow(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                days[i],
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue[900],
+                                ),
+                              ),
                             ),
-                          ),
+                            for (int j = 0; j < 3; j++)
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    TextField(
+                                      controller: _subjectControllers[i * 3 + j],
+                                      decoration: InputDecoration(
+                                        labelText: 'Subject',
+                                        labelStyle: TextStyle(fontSize: 14),
+                                        border: InputBorder.none,
+                                        filled: true,
+                                        fillColor: Colors.blue[50],
+                                        contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                                      ),
+                                      style: TextStyle(fontSize: 14),
+                                    ),
+                                    SizedBox(height: 8),
+                                    TextField(
+                                      controller: _timeControllers[i * 3 + j],
+                                      decoration: InputDecoration(
+                                        labelText: 'Time',
+                                        labelStyle: TextStyle(fontSize: 14),
+                                        border: InputBorder.none,
+                                        filled: true,
+                                        fillColor: Colors.blue[50],
+                                        contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                                      ),
+                                      style: TextStyle(fontSize: 14),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                          ],
                         ),
-                        for (int j = 0; j < 3; j++)
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                TextField(
-                                  controller: _subjectControllers[i * 3 + j],
-                                  decoration: InputDecoration(
-                                    labelText: 'Subject',
-                                    labelStyle: TextStyle(fontSize: 14),
-                                    border: InputBorder.none, // Remove underline
-                                    filled: true,
-                                    fillColor: Colors.blue[50],
-                                    contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-                                  ),
-                                  style: TextStyle(fontSize: 14),
-                                ),
-                                SizedBox(height: 8), // Space between fields
-                                TextField(
-                                  controller: _timeControllers[i * 3 + j],
-                                  decoration: InputDecoration(
-                                    labelText: 'Time',
-                                    labelStyle: TextStyle(fontSize: 14),
-                                    border: InputBorder.none, // Remove underline
-                                    filled: true,
-                                    fillColor: Colors.blue[50],
-                                    contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-                                  ),
-                                  style: TextStyle(fontSize: 14),
-                                ),
-                              ],
-                            ),
-                          ),
-                      ],
-                    ),
+                    ],
+                  ),
                 ],
               ),
             ),
