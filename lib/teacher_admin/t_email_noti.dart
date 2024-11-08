@@ -72,130 +72,99 @@ class _EmailSenderPageState extends State<EmailSenderPage> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MaterialApp(
+        debugShowCheckedModeBanner: false,
+    home: SafeArea(
+      child: Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: Colors.white,
-        ),
-        title: Text('Send Email', style: TextStyle(color: Colors.white)),
-        backgroundColor: Color(0xFF333A56),
+        title: Text('Send Email'),
+        backgroundColor:  const Color(0xFF4A5A6A),
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            children: [
-              SizedBox(height: 20), // Add some top margin
-              Container(
-                width: MediaQuery.of(context).size.width * 0.8,
-                padding: EdgeInsets.all(16.0),
-                margin: EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Color(0xFF333A56).withOpacity(0.9),
-                      Colors.white.withOpacity(0.9),
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                  border: Border.all(
-                    color: Colors.grey,
-                    width: 2.0,
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
+      // Wrapping the main content in SafeArea
+        body: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  padding: EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        const Color(0xFF4A5A6A).withOpacity(0.9),
+                        Colors.white.withOpacity(0.9),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                    border: Border.all(
                       color: Colors.grey,
-                      blurRadius: 10.0,
-                      spreadRadius: 3.0,
+                      width: 2.0,
                     ),
-                  ],
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextField(
-                      controller: _nameController,
-                      decoration: InputDecoration(
-                        labelText: 'Name',
-                        labelStyle: TextStyle(color: Colors.white),
-                        border: OutlineInputBorder(),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey,
+                        blurRadius: 10.0,
+                        spreadRadius: 3.0,
                       ),
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    SizedBox(height: 16.0),
-                    TextField(
-                      controller: _idController,
-                      decoration: InputDecoration(
-                        labelText: 'ID',
-                        labelStyle: TextStyle(color: Colors.white),
-                        border: OutlineInputBorder(),
-                      ),
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    SizedBox(height: 16.0),
-                    TextField(
-                      controller: _passwordController,
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        labelStyle: TextStyle(color: Colors.white),
-                        border: OutlineInputBorder(),
-                      ),
-                      obscureText: true,
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: _composeEmail,
-                      child: Text('Send Email'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        disabledBackgroundColor: Color(0xFF333A56),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 20),
-              if (sentEmails.isNotEmpty) ...[
-                Text(
-                  'Sent Emails:',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: sentEmails.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      margin: EdgeInsets.all(8.0),
-                      padding: EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                        color: Color(0xFF333A56).withOpacity(0.8),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: ListTile(
-                        title: Text('Name: ${sentEmails[index]['name']}'),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('ID: ${sentEmails[index]['id']}'),
-                            Text('Password: ${sentEmails[index]['password']}'),
-                          ],
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextField(
+                        controller: _nameController,
+                        decoration: InputDecoration(
+                          labelText: 'Name',
+                          labelStyle: TextStyle(color: Colors.white),
+                          border: OutlineInputBorder(),
                         ),
-                        trailing: IconButton(
-                          icon: Icon(Icons.delete, color: Colors.white),
-                          onPressed: () => _deleteEmail(index),
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      SizedBox(height: 16.0),
+                      TextField(
+                        controller: _idController,
+                        decoration: InputDecoration(
+                          labelText: 'ID',
+                          labelStyle: TextStyle(color: Colors.white),
+                          border: OutlineInputBorder(),
+                        ),
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      SizedBox(height: 16.0),
+                      TextField(
+                        controller: _passwordController,
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                          labelStyle: TextStyle(color: Colors.white),
+                          border: OutlineInputBorder(),
+                        ),
+                        obscureText: true,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: _composeEmail,
+                        child: Text('Send Email'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          disabledBackgroundColor:  const Color(0xFF4A5A6A),
                         ),
                       ),
-                    );
-                  },
+                    ],
+                  ),
                 ),
               ],
-            ],
+            ),
           ),
         ),
       ),
+    )
     );
   }
+
 }
+

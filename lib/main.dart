@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:untitled2/add_student.dart';
 import 'package:untitled2/addmissiondata.dart';
 import 'package:untitled2/admin_panne.dart';
-import 'package:untitled2/attendence_record.dart';
 import 'package:untitled2/events.dart';
 import 'package:untitled2/firebase_options.dart';
 import 'package:untitled2/studentpage.dart';
@@ -107,17 +106,3 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
   }
 }
 
-// Your next page
-class NextPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Next Page'),
-      ),
-      body: Center(
-        child: Text('This is the next page'),
-      ),
-    );
-  }
-}
