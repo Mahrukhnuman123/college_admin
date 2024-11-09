@@ -58,7 +58,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     Future.delayed(Duration(seconds: 7), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => dashboardpage()), // Replace with your next page
+        MaterialPageRoute(builder: (context) => AdminPage()), // Replace with your next page
       );
     });
   }
@@ -76,7 +76,14 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
         body: Container(
           width: double.infinity,
           height: double.infinity,
-          color: Colors.black45,// Background color
+        decoration: BoxDecoration(
+        gradient: const LinearGradient(
+        colors: [
+        Colors.blueGrey,
+        Colors.grey,
+        Colors.greenAccent,
+        ],
+    ),),// Background color
           child: Stack(
             children: [
               FadeTransition(
