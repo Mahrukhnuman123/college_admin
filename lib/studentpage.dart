@@ -28,9 +28,9 @@ class _DashboardPageState extends State<DashboardPage> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
-    DashboardPageContent(),
-    NotificationPage(),
-    EmailPage(),
+    SafeArea(child: DashboardPageContent()),
+    SafeArea(child: NotificationStudent()),
+    SafeArea(child: StudentEmailPage()),
   ];
 
   void _onItemTapped(int index) {
@@ -41,21 +41,23 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBody: true,
-      body: SafeArea(child: _pages[_selectedIndex]),
-      bottomNavigationBar: CurvedNavigationBar(
-        color: Color(0xFF1B9BDA).withOpacity(0.9),
-        backgroundColor: Colors.transparent,
-        buttonBackgroundColor: Color(0xFF1B9BDA).withOpacity(0.9),
-        animationCurve: Curves.easeInOut,
-        animationDuration: Duration(milliseconds: 500),
-        items: const <Widget>[
-          Icon(Icons.home, size: 30, color: Colors.white),
-          Icon(Icons.notifications, size: 30, color: Colors.white),
-          Icon(Icons.email, size: 30, color: Colors.white),
-        ],
-        onTap: _onItemTapped,
+    return SafeArea(
+      child: Scaffold(
+        extendBody: true,
+        body: _pages[_selectedIndex],
+        bottomNavigationBar: CurvedNavigationBar(
+          color: const Color(0xFF1B9BDA).withOpacity(0.9),
+          backgroundColor: Colors.transparent,
+          buttonBackgroundColor: const Color(0xFF1B9BDA).withOpacity(0.9),
+          animationCurve: Curves.easeInOut,
+          animationDuration: const Duration(milliseconds: 500),
+          items: const <Widget>[
+            Icon(Icons.home, size: 30, color: Colors.white),
+            Icon(Icons.notifications, size: 30, color: Colors.white),
+            Icon(Icons.email, size: 30, color: Colors.white),
+          ],
+          onTap: _onItemTapped,
+        ),
       ),
     );
   }
@@ -94,7 +96,7 @@ class DashboardPageContent extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    const Text(
                       'Student Dashboard',
                       style: TextStyle(
                         color: Colors.white,
@@ -103,7 +105,7 @@ class DashboardPageContent extends StatelessWidget {
                         letterSpacing: 1.5,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
                       'Manage Your Activities',
                       style: TextStyle(
@@ -120,18 +122,24 @@ class DashboardPageContent extends StatelessWidget {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: GridView(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: MediaQuery.of(context).size.width < 600 ? 2 : 4,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
+              child: SafeArea(
+                child: GridView(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: MediaQuery.of(context).size.width < 600 ? 2 : 4,
+                    crossAxisSpacing: 20,
+                    mainAxisSpacing: 20,
+                  ),
+                  children: [
+                    _buildAnimatedGridTile(
+                        context, 'Add Student', AddStudentPage (), Icons.person_add),
+                    _buildAnimatedGridTile(
+                        context, 'Timetable', TimetableStudent(), Icons.schedule),
+                    _buildAnimatedGridTile(
+                        context, 'Courses', CoursesStudent(), Icons.book),
+                    _buildAnimatedGridTile(
+                        context, 'Events', StudentEventPage(), Icons.event),
+                  ],
                 ),
-                children: [
-                  _buildAnimatedGridTile(context, 'Add Student', AddStudentPage(), Icons.person_add),
-                  _buildAnimatedGridTile(context, 'Timetable', Timetable(), Icons.schedule),
-                  _buildAnimatedGridTile(context, 'Courses', CoursesStudent(), Icons.book),
-                  _buildAnimatedGridTile(context, 'Events', Event(), Icons.event),
-                ],
               ),
             ),
           ),
@@ -156,7 +164,7 @@ class DashboardPageContent extends StatelessWidget {
       },
       child: TweenAnimationBuilder(
         tween: Tween<double>(begin: 1.0, end: 1.0),
-        duration: Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 200),
         builder: (BuildContext context, double scale, Widget? child) {
           return Transform.scale(
             scale: scale,
@@ -169,7 +177,7 @@ class DashboardPageContent extends StatelessWidget {
                     color: Colors.black.withOpacity(0.1),
                     spreadRadius: 2,
                     blurRadius: 6,
-                    offset: Offset(3, 3),
+                    offset: const Offset(3, 3),
                   ),
                 ],
               ),
@@ -180,12 +188,12 @@ class DashboardPageContent extends StatelessWidget {
                     CircleAvatar(
                       radius: 30,
                       backgroundColor: Colors.white.withOpacity(0.8),
-                      child: Icon(icon, color: Color(0xFF1B9BDA), size: 35),
+                      child: Icon(icon, color: const Color(0xFF1B9BDA), size: 35),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Text(
                       title,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Color(0xFF1B9BDA),
                         fontSize: 18,
                         fontWeight: FontWeight.bold,

@@ -8,200 +8,150 @@ class AdminPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: LayoutBuilder(
-          builder: (context, constraints) {
-            bool isMobile = constraints.maxWidth <= 600;
-            return Container(
-              color: Colors.white,
-              height: double.infinity,
-              width: double.infinity,
-              child: Column(
-                children: [
-                  // Curved Top Container with title
-                  _buildTopContainer(),
-                  const SizedBox(height: 40),
-
-                  // First Row: Admission Container (aligned left)
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => AdmissionData(),
-                                ),
-                              );
-                            },
-                            child: _buildOptionContainer(
-                              'Admission',
-                              Icons.school,
-                              [
-                                const Color.fromARGB(255, 6, 212, 195),
-                                const Color.fromARGB(255, 190, 236, 192),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.green, Colors.blue, Colors.grey],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Top Title "CollegeLink"
+              const Padding(
+                padding: EdgeInsets.only(bottom: 90),
+                child: Text(
+                  "CollegeLink",
+                  style: TextStyle(
+                    fontSize: 28,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
                   ),
-                  const SizedBox(height: 30),
+                ),
+              ),
 
-                  // Second Row: Student Container (aligned center)
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DashboardPage(),
-                                ),
-                              );
-                            },
-                            child: _buildOptionContainer(
-                              'Student',
-                              Icons.people,
-                              [
-                                Colors.blue,
-                                const Color.fromARGB(255, 41, 62, 80),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 30),
-
-                  // Third Row: Teacher Container (aligned right)
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => TeacherPage(),
-                                ),
-                              );
-                            },
-                            child: _buildOptionContainer(
-                              'Teacher',
-                              Icons.person,
-                              [
-                                const Color(0xFF333A56),
-                                const Color.fromARGB(197, 192, 200, 231),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+              // Admission Container
+              _buildOptionContainer(
+                context,
+                title: 'Admission',
+                icon: Icons.school,
+                colors: [
+                  const Color.fromARGB(255, 6, 212, 195),
+                  const Color.fromARGB(255, 190, 236, 192),
                 ],
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AdmissionData(),
+                    ),
+                  );
+                },
               ),
-            );
-          },
-        ),
-      ),
-    );
-  }
+              const SizedBox(height: 20),
 
-  // Helper method to build the curved top container
-  Widget _buildTopContainer() {
-    return Container(
-      height: 180,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [
-            Colors.blueGrey,
-            Colors.grey,
-            Colors.greenAccent,
-          ],
-        ),
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(40),
-          bottomRight: Radius.circular(40),
-        ),
-      ),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text(
-              "CollegeLink",
-              style: TextStyle(
-                fontSize: 24,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+              // Student Container
+              _buildOptionContainer(
+                context,
+                title: 'Student',
+                icon: Icons.people,
+                colors: [
+                  Colors.blue,
+                  const Color.fromARGB(255, 41, 62, 80),
+                ],
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DashboardPage(),
+                    ),
+                  );
+                },
               ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              "Choose one to explore your activities",
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.white70,
+              const SizedBox(height: 20),
+
+              // Teacher Container
+              _buildOptionContainer(
+                context,
+                title: 'Teacher',
+                icon: Icons.person,
+                colors: [
+                  const Color(0xFF333A56),
+                  const Color.fromARGB(197, 192, 200, 231),
+                ],
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TeacherPage(),
+                    ),
+                  );
+                },
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
   // Helper method to build individual option containers
-  Widget _buildOptionContainer(String title, IconData icon, List<Color> colors) {
-    return Container(
-      height: 140,
-      width: 300,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: colors,
+  Widget _buildOptionContainer(BuildContext context,
+      {required String title,
+        required IconData icon,
+        required List<Color> colors,
+        required Function() onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 140,
+        width: 300,
+        margin: const EdgeInsets.symmetric(horizontal: 20),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(colors: colors),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 10,
+              offset: const Offset(0, 5), // Shadow position
+            ),
+          ],
         ),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround, // Spacing between icon and text
-        children: [
-          // Icon Container
-          Container(
-            height: 60,
-            width: 60,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            // Icon Container
+            Container(
+              height: 60,
+              width: 60,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                icon,
+                size: 30,
+                color: Colors.blue,
+              ),
             ),
-            child: Icon(
-              icon,
-              size: 30,
-              color: Colors.blue,
+            // Text Container
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 20,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          // Text Container
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 20,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
-
 }

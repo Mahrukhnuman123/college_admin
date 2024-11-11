@@ -23,7 +23,7 @@ class _TeacherPageState extends State<TeacherPage> {
   final List<Widget> _pages = [
     DashboardContent(),
     NotificationTeacher(),
-    EmailSenderPage(),
+    TeacherEmailPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -34,21 +34,23 @@ class _TeacherPageState extends State<TeacherPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBody: true,
-      body: SafeArea(child: _pages[_selectedIndex]),
-      bottomNavigationBar: CurvedNavigationBar(
-        color: const Color(0xFF4A5A6A),
-        backgroundColor: Colors.transparent,
-        buttonBackgroundColor: const Color(0xFF4A5A6A),
-        animationCurve: Curves.easeInOutCubic,
-        animationDuration: const Duration(milliseconds: 500),
-        items: const [
-          Icon(Icons.home, size: 30, color: Colors.white),
-          Icon(Icons.notifications, size: 30, color: Colors.white),
-          Icon(Icons.email, size: 30, color: Colors.white),
-        ],
-        onTap: _onItemTapped,
+    return SafeArea( // SafeArea added here
+      child: Scaffold(
+        extendBody: true,
+        body: _pages[_selectedIndex],
+        bottomNavigationBar: CurvedNavigationBar(
+          color: const Color(0xFF4A5A6A),
+          backgroundColor: Colors.transparent,
+          buttonBackgroundColor: const Color(0xFF4A5A6A),
+          animationCurve: Curves.easeInOutCubic,
+          animationDuration: const Duration(milliseconds: 500),
+          items: const [
+            Icon(Icons.home, size: 30, color: Colors.white),
+            Icon(Icons.notifications, size: 30, color: Colors.white),
+            Icon(Icons.email, size: 30, color: Colors.white),
+          ],
+          onTap: _onItemTapped,
+        ),
       ),
     );
   }
@@ -70,8 +72,8 @@ class DashboardContent extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    ' Teacher Dashboard',
+                  const Text(
+                    'Teacher Dashboard',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 26,
@@ -79,7 +81,7 @@ class DashboardContent extends StatelessWidget {
                       letterSpacing: 1.5,
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Text(
                     'Manage Your Activities',
                     style: TextStyle(
@@ -111,10 +113,10 @@ class DashboardContent extends StatelessWidget {
                 'Events'
               ];
               List<Widget> pages = [
-                AddTeacher(),
-                TimetableT(),
+                AddTeacherPage(),
+                TimetableTeacher (),
                 CoursesTeacher(),
-                T_events(),
+                TeacherEventPage(),
               ];
               List<IconData> icons = [
                 Icons.person_add,

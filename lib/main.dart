@@ -1,13 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:untitled2/add_student.dart';
-import 'package:untitled2/addmissiondata.dart';
 import 'package:untitled2/admin_panne.dart';
-import 'package:untitled2/events.dart';
 import 'package:untitled2/firebase_options.dart';
-import 'package:untitled2/studentpage.dart';
-import 'package:untitled2/teacher_admin/teacher_page.dart';
-import 'package:untitled2/timetable.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,33 +26,36 @@ class AdminScreen extends StatefulWidget {
   _AdminScreenState createState() => _AdminScreenState();
 }
 
-class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStateMixin {
-   late AnimationController _animationController;
- late  Animation<double> _animation;
+class _AdminScreenState extends State<AdminScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
 
   @override
   void initState() {
     super.initState();
 
+    // Animation Controller
     _animationController = AnimationController(
-      duration: Duration(seconds: 5),
+      duration: const Duration(seconds: 3),
       vsync: this,
     );
 
-    _animation = Tween<double>(begin: 1.0, end: 0.0).animate(
+    // Fade Animation
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _animationController,
-        curve: Curves.easeOut,
+        curve: Curves.easeIn,
       ),
     );
 
     _animationController.forward();
 
-    // Wait for 5 seconds and navigate to the next page
-    Future.delayed(Duration(seconds: 7), () {
+    // Navigate to AdminPage after 5 seconds
+    Future.delayed(const Duration(seconds: 5), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => AdminPage()), // Replace with your next page
+        MaterialPageRoute(builder: (context) => AdminPage()),
       );
     });
   }
@@ -76,40 +73,32 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
         body: Container(
           width: double.infinity,
           height: double.infinity,
-        decoration: BoxDecoration(
-        gradient: const LinearGradient(
-        colors: [
-        Colors.blueGrey,
-        Colors.grey,
-        Colors.greenAccent,
-        ],
-    ),),// Background color
-          child: Stack(
-            children: [
-              FadeTransition(
-                opacity: _animation,
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 50.0),
-                    child: Center(
-                      child: Text(
-                        'Welcome to Admin Panel', // Centered text
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.green,
+                Colors.blue,
+                Colors.grey,
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: Center(
+            child: FadeTransition(
+              opacity: _fadeAnimation,
+              child: Text(
+                'Welcome to Admin Panel',
+                style: const TextStyle(
+                  color: Colors.white, // Text color light blue
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
 }
-
