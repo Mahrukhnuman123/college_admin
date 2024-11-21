@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -51,10 +52,6 @@ class _NotificationPageBaseState extends State<NotificationPageBase> {
     }
   }
 
-  // Method to delete a notification
-  void _deleteNotification(String notificationId) {
-    _notificationsRef.doc(notificationId).delete();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +68,8 @@ class _NotificationPageBaseState extends State<NotificationPageBase> {
                 _updateNotificationsRef();
               });
             },
-            items: <String>['IT', 'Economic', 'Islamiat'].map<DropdownMenuItem<String>>((String value) {
+            items: <String>['IT', 'Economic', 'Islamiat'].map<
+                DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
                 child: Text(value, style: TextStyle(color: Colors.black)),
@@ -154,75 +152,16 @@ class _NotificationPageBaseState extends State<NotificationPageBase> {
                   ],
                 ),
               ),
-              SizedBox(height: 30),
-              Expanded(
-                child: _buildNotificationsList(),
-              ),
             ],
           ),
         ),
       ),
     );
   }
-
-  // Method to build the notifications list
-  Widget _buildNotificationsList() {
-    return StreamBuilder<QuerySnapshot>(
-      stream: _notificationsRef.orderBy('timestamp', descending: true).snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error loading notifications'));
-        } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return Center(child: Text('No notifications sent yet.'));
-        }
-
-        final notificationsList = snapshot.data!.docs;
-
-        return ListView.builder(
-          itemCount: notificationsList.length,
-          itemBuilder: (context, index) {
-            final notification = notificationsList[index];
-            final message = notification['message'] as String;
-            final notificationId = notification.id;
-
-            return Container(
-              margin: EdgeInsets.symmetric(vertical: 8.0),
-              padding: EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                    offset: Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      message,
-                      style: TextStyle(fontSize: 16, color: Colors.black),
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.delete, color: Colors.red),
-                    onPressed: () {
-                      _deleteNotification(notificationId);
-                    },
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
 }
+
+
+
+
+
+

@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:untitled2/add_student.dart';
-import 'package:untitled2/courses_student.dart';
-import 'package:untitled2/events.dart';
 import 'package:untitled2/teacher_admin/add_teacher.dart';
 import 'package:untitled2/teacher_admin/notificationteacher.dart';
 import 'package:untitled2/teacher_admin/t_email_noti.dart';
 import 'package:untitled2/teacher_admin/t_events.dart';
 import 'package:untitled2/teacher_admin/teacher%20cources.dart';
 import 'package:untitled2/teacher_admin/teacher_timetable.dart';
-import 'package:untitled2/timetable.dart';
-import 'package:untitled2/email_notification.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 class TeacherPage extends StatefulWidget {
@@ -34,7 +29,7 @@ class _TeacherPageState extends State<TeacherPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea( // SafeArea added here
+    return SafeArea(
       child: Scaffold(
         extendBody: true,
         body: _pages[_selectedIndex],
@@ -61,39 +56,43 @@ class DashboardContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Top Header with Curved Edges
-        ClipPath(
-          clipper: TopCurveClipper(),
-          child: Container(
+        // Top Header with Curved Edges using BoxDecoration
+        Container(
+          decoration: BoxDecoration(
             color: const Color(0xFF4A5A6A),
-            width: double.infinity,
-            height: 220.0,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Teacher Dashboard',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.5,
-                    ),
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(80),
+              bottomRight: Radius.circular(80),
+            ),
+          ),
+          width: double.infinity,
+          height: 200.0,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'Teacher Dashboard',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.5,
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Manage Your Activities',
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.8),
-                      fontSize: 16,
-                    ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Manage Your Activities',
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.8),
+                    fontSize: 16,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
+        SizedBox(height: 40,),
         // Responsive GridView with Menu Options
         Expanded(
           child: GridView.builder(
@@ -114,7 +113,7 @@ class DashboardContent extends StatelessWidget {
               ];
               List<Widget> pages = [
                 AddTeacherPage(),
-                TimetableTeacher (),
+                TimetableTeacher(),
                 CoursesTeacher(),
                 TeacherEventPage(),
               ];
@@ -124,7 +123,7 @@ class DashboardContent extends StatelessWidget {
                 Icons.book,
                 Icons.event
               ];
-              return _buildAnimatedTile(
+              return _buildTile(
                 context,
                 titles[index],
                 pages[index],
@@ -137,30 +136,13 @@ class DashboardContent extends StatelessWidget {
     );
   }
 
-  // Method for creating GridView tiles with animation
-  Widget _buildAnimatedTile(
-      BuildContext context, String title, Widget page, IconData icon) {
+  // Method for creating GridView tiles without animation
+  Widget _buildTile(BuildContext context, String title, Widget page, IconData icon) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) => page,
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) {
-              const begin = Offset(1.0, 0.0);
-              const end = Offset.zero;
-              const curve = Curves.easeInOut;
-
-              var tween = Tween(begin: begin, end: end)
-                  .chain(CurveTween(curve: curve));
-
-              return SlideTransition(
-                position: animation.drive(tween),
-                child: child,
-              );
-            },
-          ),
+          MaterialPageRoute(builder: (context) => page),
         );
       },
       child: Container(
@@ -198,23 +180,4 @@ class DashboardContent extends StatelessWidget {
       ),
     );
   }
-}
-
-// Custom Clipper for Header Curve
-class TopCurveClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    var path = Path();
-    path.lineTo(0, size.height - 50);
-    var firstControlPoint = Offset(size.width / 2, size.height + 20);
-    var firstEndPoint = Offset(size.width, size.height - 50);
-    path.quadraticBezierTo(
-        firstControlPoint.dx, firstControlPoint.dy, firstEndPoint.dx, firstEndPoint.dy);
-    path.lineTo(size.width, 0);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }

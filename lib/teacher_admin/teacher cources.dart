@@ -325,7 +325,7 @@ class _AddSubjectViewState extends State<AddSubjectView> {
       child: Scaffold(
         appBar: AppBar(
           title: Text('Add Subject', style: TextStyle(color: Colors.white)),
-          backgroundColor: Color(0xFF1B9BDA),
+          backgroundColor:  const Color(0xFF4A5A6A),
           iconTheme: IconThemeData(
             color: Colors.white,
           ),
@@ -348,7 +348,7 @@ class _AddSubjectViewState extends State<AddSubjectView> {
                   onPressed: _pickImage,
                   child: Text('Select Image'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF1B9BDA),
+                    backgroundColor:  const Color(0xFF4A5A6A),
                   ),
                 ),
                 SizedBox(height: 20),
@@ -363,7 +363,7 @@ class _AddSubjectViewState extends State<AddSubjectView> {
                   onPressed: _uploadSubject,
                   child: Text('Add Subject'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF1B9BDA),
+                    backgroundColor:  const Color(0xFF4A5A6A),
                   ),
                 ),
               ],
@@ -422,7 +422,7 @@ class SubjectView extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(subject, style: TextStyle(color: Colors.white)),
-          backgroundColor: Color(0xFF1B9BDA),
+          backgroundColor:  const Color(0xFF4A5A6A),
           iconTheme: IconThemeData(
             color: Colors.white,
           ),
@@ -462,7 +462,7 @@ class SubjectView extends StatelessWidget {
               child: Text(
                 '$department - $semester',
                 style: TextStyle(
-                    color: Color(0xFF1B9BDA),
+                    color:  const Color(0xFF4A5A6A),
                     fontSize: 18,
                     fontWeight: FontWeight.bold),
               ),
@@ -476,7 +476,7 @@ class SubjectView extends StatelessWidget {
             Text(
               subject,
               style: TextStyle(
-                color:Color(0xFF1B9BDA),
+                color: const Color(0xFF4A5A6A),
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
               ),

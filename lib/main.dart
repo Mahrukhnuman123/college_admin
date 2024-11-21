@@ -41,7 +41,7 @@ class _AdminScreenState extends State<AdminScreen>
       vsync: this,
     );
 
-    // Fade Animation
+    // Fade Animation for Text
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _animationController,
@@ -52,7 +52,7 @@ class _AdminScreenState extends State<AdminScreen>
     _animationController.forward();
 
     // Navigate to AdminPage after 5 seconds
-    Future.delayed(const Duration(seconds: 5), () {
+    Future.delayed(const Duration(seconds: 8), ()  async {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => AdminPage()),
@@ -73,28 +73,46 @@ class _AdminScreenState extends State<AdminScreen>
         body: Container(
           width: double.infinity,
           height: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Colors.green,
-                Colors.blue,
-                Colors.grey,
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
+          color: Colors.white, // Set background color to white
           child: Center(
-            child: FadeTransition(
-              opacity: _fadeAnimation,
-              child: Text(
-                'Welcome to Admin Panel',
-                style: const TextStyle(
-                  color: Colors.white, // Text color light blue
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Move the logo slightly upwards using Transform.translate
+                Transform.translate(
+                  offset: const Offset(0, -50), // Move up by 50 pixels
+                  child: Image.asset(
+                    'assets/images/Logo.png',
+                    width: 140, // Adjust the size as needed
+                    height: 140,
+                  ),
                 ),
-              ),
+                const SizedBox(height: 20), // Space between logo and text
+
+                // Fade-in Animation for Text with Gradient Color
+                FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: ShaderMask(
+                    shaderCallback: (bounds) => LinearGradient(
+                      colors: [
+                        Colors.green,
+                        Colors.blue,
+                        Colors.grey,
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ).createShader(bounds),
+                    child: const Text(
+                      'Welcome to Admin Panel',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white, // This will be masked by the gradient
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),

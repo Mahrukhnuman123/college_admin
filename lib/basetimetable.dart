@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
- class TimetablePage extends StatefulWidget {
+class TimetablePage extends StatefulWidget {
   final String pageTitle;
   final Color appBarColor;
   final Color titleColor;
@@ -19,11 +19,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 }
 
 class _TimetablePageState extends State<TimetablePage> {
-  final List<String> days = ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun'];
+  final List<String> days = ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
   final List<TextEditingController> _subjectControllers = List.generate(21, (_) => TextEditingController());
   final List<TextEditingController> _timeControllers = List.generate(21, (_) => TextEditingController());
+  final List<TextEditingController> _teacherControllers = List.generate(21, (_) => TextEditingController());
   final List<String> departments = ['IT', 'Economic', 'Islamiat'];
-  String selectedDepartment = 'IT';  // Default selected department
+  String selectedDepartment = 'IT'; // Default selected department
 
   void _saveTimetable() {
     for (int i = 0; i < days.length; i++) {
@@ -33,14 +34,17 @@ class _TimetablePageState extends State<TimetablePage> {
           {
             'subject': _subjectControllers[i * 3].text,
             'time': _timeControllers[i * 3].text,
+            'teacher': _teacherControllers[i * 3].text,
           },
           {
             'subject': _subjectControllers[i * 3 + 1].text,
             'time': _timeControllers[i * 3 + 1].text,
+            'teacher': _teacherControllers[i * 3 + 1].text,
           },
           {
             'subject': _subjectControllers[i * 3 + 2].text,
             'time': _timeControllers[i * 3 + 2].text,
+            'teacher': _teacherControllers[i * 3 + 2].text,
           },
         ]
       });
@@ -96,6 +100,7 @@ class _TimetablePageState extends State<TimetablePage> {
                       1: FlexColumnWidth(2.5),
                       2: FlexColumnWidth(2.5),
                       3: FlexColumnWidth(2.5),
+                      4: FlexColumnWidth(2.5),
                     },
                     border: TableBorder.all(color: Colors.black, width: 1),
                     children: [
@@ -143,6 +148,19 @@ class _TimetablePageState extends State<TimetablePage> {
                                       ),
                                       style: TextStyle(fontSize: 14),
                                     ),
+                                    SizedBox(height: 8),
+                                    TextField(
+                                      controller: _teacherControllers[i * 3 + j],
+                                      decoration: InputDecoration(
+                                        labelText: 'Teacher',
+                                        labelStyle: TextStyle(fontSize: 14),
+                                        border: InputBorder.none,
+                                        filled: true,
+                                        fillColor: Colors.blue[50],
+                                        contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                                      ),
+                                      style: TextStyle(fontSize: 14),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -163,6 +181,7 @@ class _TimetablePageState extends State<TimetablePage> {
   void dispose() {
     _subjectControllers.forEach((controller) => controller.dispose());
     _timeControllers.forEach((controller) => controller.dispose());
+    _teacherControllers.forEach((controller) => controller.dispose());
     super.dispose();
   }
 }

@@ -1,8 +1,6 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:uuid/uuid.dart';
 
 class BaseAddPage extends StatefulWidget {
@@ -34,30 +32,9 @@ class _BaseAddPageState extends State<BaseAddPage> {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final Uuid _uuid = Uuid();
-
-  Future<String> getDeviceId() async {
-    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    try {
-      if (Platform.isAndroid) {
-        final AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-        return androidInfo.id;
-      } else if (Platform.isIOS) {
-        final IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-        return iosInfo.identifierForVendor ?? _uuid.v4();
-      } else {
-        return _uuid.v4();
-      }
-    } catch (e) {
-      print("Error getting device ID: $e");
-      return _uuid.v4(); // Fallback UUID
-    }
-  }
 
   Future<void> addToFirebase() async {
     try {
-      final deviceId = await getDeviceId();
-
       UserCredential userCredential =
       await _auth.createUserWithEmailAndPassword(
         email: emailController.text.trim(),
@@ -83,10 +60,10 @@ class _BaseAddPageState extends State<BaseAddPage> {
           'Department': department,
           'ID': id,
           'Password': passwordController.text.trim(),
-          'DeviceId': deviceId,
         })
             .then((_) => print("${widget.roleType} added successfully."))
-            .catchError((error) => print("Failed to add ${widget.roleType}: $error"));
+            .catchError((error) =>
+            print("Failed to add ${widget.roleType}: $error"));
       }
     } catch (e) {
       print("Error adding ${widget.roleType}: $e");

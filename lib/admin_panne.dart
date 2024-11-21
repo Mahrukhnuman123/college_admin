@@ -11,87 +11,102 @@ class AdminPage extends StatelessWidget {
         body: Container(
           width: double.infinity,
           height: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.green, Colors.blue, Colors.grey],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
+          color: Colors.white, // Background color set to white
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              // Top Title "CollegeLink"
-              const Padding(
-                padding: EdgeInsets.only(bottom: 90),
-                child: Text(
-                  "CollegeLink",
-                  style: TextStyle(
-                    fontSize: 28,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
+              // Logo and Title Section
+              const SizedBox(height: 40),
+              Image.asset(
+                'assets/images/Logo.png', // Path to your logo image
+                width: 100,
+                height: 100,
+              ),
+              const SizedBox(height: 10),
+
+              // Title Text "CollegeLink"
+
+              const Text(
+                "College Link",
+                style: TextStyle(
+                  fontSize: 28,
+                  color: Color(0xFF1B9BDA),
+                  fontWeight: FontWeight.bold,
                 ),
               ),
+              const SizedBox(height: 30), // Increased spacing below title
 
-              // Admission Container
-              _buildOptionContainer(
-                context,
-                title: 'Admission',
-                icon: Icons.school,
-                colors: [
-                  const Color.fromARGB(255, 6, 212, 195),
-                  const Color.fromARGB(255, 190, 236, 192),
-                ],
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AdmissionData(),
+              // Containers in Rows
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // First Row with two containers: Admission and Student
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _buildOptionContainer(
+                          context,
+                          title: 'Admission',
+                          icon: Icons.school,
+                          colors: [
+                            const Color.fromARGB(255, 6, 212, 195),
+                            const Color.fromARGB(255, 190, 236, 192),
+                          ],
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AdmissionData(),
+                              ),
+                            );
+                          },
+                        ),
+                        _buildOptionContainer(
+                          context,
+                          title: 'Student',
+                          icon: Icons.people,
+                          colors: [
+                            Colors.blue,
+                            const Color.fromARGB(255, 41, 62, 80),
+                          ],
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DashboardPage(),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     ),
-                  );
-                },
-              ),
-              const SizedBox(height: 20),
+                    const SizedBox(height: 20),
 
-              // Student Container
-              _buildOptionContainer(
-                context,
-                title: 'Student',
-                icon: Icons.people,
-                colors: [
-                  Colors.blue,
-                  const Color.fromARGB(255, 41, 62, 80),
-                ],
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DashboardPage(),
+                    // Second Row with the "Teacher" container centered
+                    Center(
+                      child: _buildOptionContainer(
+                        context,
+                        title: 'Teacher',
+                        icon: Icons.person,
+                        colors: [
+                          const Color(0xFF333A56),
+                          const Color.fromARGB(197, 192, 200, 231),
+                        ],
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TeacherPage(),
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  );
-                },
+                  ],
+                ),
               ),
-              const SizedBox(height: 20),
-
-              // Teacher Container
-              _buildOptionContainer(
-                context,
-                title: 'Teacher',
-                icon: Icons.person,
-                colors: [
-                  const Color(0xFF333A56),
-                  const Color.fromARGB(197, 192, 200, 231),
-                ],
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TeacherPage(),
-                    ),
-                  );
-                },
-              ),
+              const SizedBox(height: 40), // Spacing at the bottom
             ],
           ),
         ),
@@ -100,17 +115,19 @@ class AdminPage extends StatelessWidget {
   }
 
   // Helper method to build individual option containers
-  Widget _buildOptionContainer(BuildContext context,
-      {required String title,
+  Widget _buildOptionContainer(
+      BuildContext context, {
+        required String title,
         required IconData icon,
         required List<Color> colors,
-        required Function() onTap}) {
+        required Function() onTap,
+      }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 140,
-        width: 300,
-        margin: const EdgeInsets.symmetric(horizontal: 20),
+        height: 180,
+        width: 170,
+        margin: const EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(
           gradient: LinearGradient(colors: colors),
           borderRadius: BorderRadius.circular(20),
@@ -123,10 +140,10 @@ class AdminPage extends StatelessWidget {
             ),
           ],
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Icon Container
+            // Icon
             Container(
               height: 60,
               width: 60,
@@ -140,7 +157,8 @@ class AdminPage extends StatelessWidget {
                 color: Colors.blue,
               ),
             ),
-            // Text Container
+            const SizedBox(height: 10),
+            // Text
             Text(
               title,
               style: const TextStyle(
