@@ -11,7 +11,7 @@ class CoursesStudent extends StatefulWidget {
 }
 
 class _CoursesStudentState extends State<CoursesStudent> {
-  final List<String> departments = ['Economics', 'IT', 'Islamiat'];
+  final List<String> departments = ['Economic', 'IT', 'Islamiat'];
   String? selectedDepartment;
 
   final Map<String, List<Map<String, String>>> semesters = {
@@ -85,7 +85,7 @@ class _CoursesStudentState extends State<CoursesStudent> {
   }
 }
 
-class SemesterView extends StatelessWidget {
+class SemesterView extends  StatelessWidget {
   final Map<String, List<Map<String, String>>> semesters;
   final String department; // Add department
 
@@ -463,7 +463,7 @@ class SubjectView extends StatelessWidget {
                 '$department - $semester',
                 style: TextStyle(
                     color: Color(0xFF1B9BDA),
-                    fontSize: 18,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold),
               ),
             ),
@@ -472,7 +472,7 @@ class SubjectView extends StatelessWidget {
               imagePath,
               height: 200,
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 30),
             Text(
               subject,
               style: TextStyle(

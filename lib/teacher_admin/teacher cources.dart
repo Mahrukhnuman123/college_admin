@@ -11,7 +11,7 @@ class CoursesTeacher extends StatefulWidget {
 }
 
 class _CoursesTeachertState extends State<CoursesTeacher> {
-  final List<String> departments = ['Economics', 'IT', 'Islamiat'];
+  final List<String> departments = ['Economic', 'IT', 'Islamiat'];
   String? selectedDepartment;
 
   final Map<String, List<Map<String, String>>> semesters = {

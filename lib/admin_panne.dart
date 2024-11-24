@@ -6,6 +6,10 @@ import 'package:untitled2/teacher_admin/teacher_page.dart';
 class AdminPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // Get screen size for responsiveness
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return SafeArea(
       child: Scaffold(
         body: Container(
@@ -19,13 +23,12 @@ class AdminPage extends StatelessWidget {
               const SizedBox(height: 40),
               Image.asset(
                 'assets/images/Logo.png', // Path to your logo image
-                width: 100,
-                height: 100,
+                width: screenWidth * 0.25, // Responsive width
+                height: screenWidth * 0.25, // Responsive height
               ),
               const SizedBox(height: 10),
 
               // Title Text "CollegeLink"
-
               const Text(
                 "College Link",
                 style: TextStyle(
@@ -53,6 +56,8 @@ class AdminPage extends StatelessWidget {
                             const Color.fromARGB(255, 6, 212, 195),
                             const Color.fromARGB(255, 190, 236, 192),
                           ],
+                          width: screenWidth * 0.4, // Adjust width
+                          height: screenHeight * 0.25, // Adjust height
                           onTap: () {
                             Navigator.push(
                               context,
@@ -70,6 +75,8 @@ class AdminPage extends StatelessWidget {
                             Colors.blue,
                             const Color.fromARGB(255, 41, 62, 80),
                           ],
+                          width: screenWidth * 0.4, // Adjust width
+                          height: screenHeight * 0.25, // Adjust height
                           onTap: () {
                             Navigator.push(
                               context,
@@ -93,6 +100,8 @@ class AdminPage extends StatelessWidget {
                           const Color(0xFF333A56),
                           const Color.fromARGB(197, 192, 200, 231),
                         ],
+                        width: screenWidth * 0.4, // Adjust width
+                        height: screenHeight * 0.25, // Adjust height
                         onTap: () {
                           Navigator.push(
                             context,
@@ -120,13 +129,15 @@ class AdminPage extends StatelessWidget {
         required String title,
         required IconData icon,
         required List<Color> colors,
+        required double width,
+        required double height,
         required Function() onTap,
       }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 180,
-        width: 170,
+        height: height, // Responsive height
+        width: width, // Responsive width
         margin: const EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(
           gradient: LinearGradient(colors: colors),
@@ -145,15 +156,15 @@ class AdminPage extends StatelessWidget {
           children: [
             // Icon
             Container(
-              height: 60,
-              width: 60,
+              height: height * 0.3, // Proportional to container height
+              width: height * 0.3, // Proportional to container height
               decoration: const BoxDecoration(
                 color: Colors.white,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 icon,
-                size: 30,
+                size: height * 0.15, // Proportional icon size
                 color: Colors.blue,
               ),
             ),
