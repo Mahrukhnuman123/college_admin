@@ -80,9 +80,9 @@ class AdmissionData extends StatelessWidget {
                 ),
                 SizedBox(height: 16.0),
                 Table(
-                  border: TableBorder.all(),
+                  border: TableBorder.all(color: Colors.black,width: 1),
                   columnWidths: {
-                    0: FlexColumnWidth(2),
+                    0: FlexColumnWidth(1.8),
                     1: FlexColumnWidth(3),
                   },
                   children: [

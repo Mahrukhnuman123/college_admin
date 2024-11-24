@@ -96,11 +96,10 @@ class _TimetablePageState extends State<TimetablePage> {
                   ),
                   Table(
                     columnWidths: {
-                      0: FlexColumnWidth(1.5),
+                      0: FlexColumnWidth(1.7),
                       1: FlexColumnWidth(2.5),
                       2: FlexColumnWidth(2.5),
                       3: FlexColumnWidth(2.5),
-                      4: FlexColumnWidth(2.5),
                     },
                     border: TableBorder.all(color: Colors.black, width: 1),
                     children: [
